@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    
+    <xs:element name="FinderConfiguration">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="OntologyLocation" maxOccurs="1" minOccurs="1">
+                    <xs:complexType>
+                        <xs:attribute name="url" type="xs:string" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="IngredientClass" maxOccurs="1" minOccurs="1">
+                    <xs:complexType>
+                        <xs:attribute name="name" type="xs:string" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+                
+                <xs:element name="AvailableLanguages" maxOccurs="1" minOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence maxOccurs="unbounded" minOccurs="0">
+                            <xs:element name="language">
+                                <xs:complexType>
+                                    <xs:attribute name="name" type="xs:string" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                
+                
+                <xs:element name="Logo" maxOccurs="1" minOccurs="1">
+                    <xs:complexType>
+                        <xs:attribute name="URL" type="xs:string" use="optional"/>
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="TitleLabel" maxOccurs="1" minOccurs="1">
+                    <xs:complexType>
+                        <xs:attribute name="text" type="xs:string" use="optional"/>
+                    </xs:complexType>
+                </xs:element>
+                
+                <xs:element name="IncludedLabel" maxOccurs="1" minOccurs="1">
+                    <xs:complexType>
+                        <xs:attribute name="text" type="xs:string" use="optional"/>
+                    </xs:complexType>
+                </xs:element>
+                
+                <xs:element name="ExcludedLabel" maxOccurs="1" minOccurs="1">
+                    <xs:complexType>
+                        <xs:attribute name="text" type="xs:string" use="optional"/>
+                    </xs:complexType>
+                </xs:element>
+                
+                    <xs:element name="ClassRendering" maxOccurs="1" minOccurs="1">
+                    <xs:complexType>
+                        <xs:attribute name="use" type="xs:string" use="optional" default="IRI"/>
+                    </xs:complexType>
+                </xs:element>
+                
+                 
+                <xs:element name="ResultsAnnotationProperty" maxOccurs="1" minOccurs="1">
+                    <xs:complexType>
+                        <xs:attribute name="name" type="xs:string" use="optional"/>
+                    </xs:complexType>
+                </xs:element>     
+                
+                <xs:element name="ResultsCharacteristics" maxOccurs="1" minOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence maxOccurs="unbounded" minOccurs="0">
+                            <xs:element name="ResultsCharacteristic">
+                                <xs:complexType>
+                                    <xs:attribute name="class" type="xs:string" use="required"/>
+                                    <xs:attribute name="url" type="xs:string" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                
+                <xs:element name="QueryTemplates" maxOccurs="1" minOccurs="1">
+                    <xs:complexType>       
+                        <xs:sequence >    <!-- At least one simple template -->  
+                            <xs:element name="SimpleTemplate" type="SimpleTemplate"/>
+                            
+                               <!-- then any number of simple or complex templates --> 
+                           <xs:choice minOccurs="0" maxOccurs="unbounded">
+                               <xs:element name="SimpleTemplate" type="SimpleTemplate"/>
+                               <xs:element name="ComplexTemplate" type="ComplexTemplate"/>
+                           </xs:choice> 
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>        
+                
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    
+   
+    
+    <!-- SimpleTemplate-->
+    
+    <xs:complexType name="SimpleTemplate">
+        <xs:sequence>
+            <xs:element name="BaseClass">
+                <xs:complexType>
+                    <xs:attribute name="name" type="xs:string" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            
+            <xs:element name="Property">
+                <xs:complexType>
+                    <xs:attribute name="name" type="xs:string" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            
+            <xs:element name="ComponentClass">
+                <xs:complexType>
+                    <xs:attribute name="name" type="xs:string" use="required"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Id" type="xs:ID" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="show" use="required">
+            <xs:simpleType> <!-- only yes or no -->
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="yes"/>
+                    <xs:enumeration value="no"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>  
+    </xs:complexType>
+    
+   <!-- ////////////////////////////////////////////////////// --> 
+    
+    <!-- ComplexTemplate-->
+    <xs:complexType name="ComplexTemplate">
+        <xs:sequence>
+            <xs:element name="BaseClass">
+                <xs:complexType>
+                    <xs:attribute name="name" type="xs:string" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            
+            <xs:element name="Property">
+                <xs:complexType>
+                    <xs:attribute name="name" type="xs:string" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            
+            <xs:element name="Template">
+                <xs:complexType>
+                    <xs:attribute name="ref" type="xs:IDREF" use="required"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Id" type="xs:ID" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="show" use="required">
+            <xs:simpleType> <!-- only yes or no -->
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="yes"/>
+                    <xs:enumeration value="no"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>   
+    </xs:complexType>
+    
+    
+</xs:schema>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<FinderConfiguration>
+    <OntologyLocation url="/sushi_9223429_atheer.owl"/>
+    
+    
+    <IngredientClass name="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SushiIngredient"/>
+    
+    <AvailableLanguages>
+        <language name="default"/>
+        <language name="ar"/> 
+        <language name="es"/> 
+    </AvailableLanguages>
+    
+    <Logo URL="/SushiLogo.png"/>
+    
+    <TitleLabel text="Suhsi Box "/>
+    <IncludedLabel />
+    <ExcludedLabel />
+    
+<ClassRendering use="label"/> <!--label Or IRI  -->
+   
+    <ResultsAnnotationProperty name="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#description"/>
+    <!-- http://www.w3.org/2000/01/rdf-schema#comment -->
+    <ResultsCharacteristics>
+        <ResultsCharacteristic  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SpicySushi" url="/spicyIcon.jpg"/>
+        <ResultsCharacteristic  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SushiWithNuts" url="/nutsIcon.jpg" />   
+        <ResultsCharacteristic  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#VegetarianSushi" url="/vegIcon.jpg" />  
+        <ResultsCharacteristic  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SpicyPlatter" url="/spicyIcon.jpg" />
+        <ResultsCharacteristic  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#VegetarianPlatter" url="/vegIcon.jpg" />
+        <ResultsCharacteristic  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#LowCaloriesPlatter" url="/lowCalIcon.jpg" />
+        
+        
+    </ResultsCharacteristics> 
+    
+    
+    <QueryTemplates>
+        
+        <SimpleTemplate Id="ID1" name="Sushi" show="yes">
+            <BaseClass name="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#NamedSushi"/>
+            <Property name="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasIngredient"/>
+            <ComponentClass name="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SushiIngredient"/>
+        </SimpleTemplate>
+        
+        
+        
+        <ComplexTemplate Id="ID2" name="platter of sushi" show="yes">
+            <BaseClass name="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SushiPlatter"/>
+            <Property name="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasContent"/>
+            <Template ref="ID1"/>
+        </ComplexTemplate>
+        
+        
+        <ComplexTemplate Id="ID3" name="Tray of platters" show="yes">
+            <BaseClass name="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SushiTray"/>
+            <Property name="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasPlatter"/>
+            <Template ref="ID2"/>
+        </ComplexTemplate>
+        
+        
+        
+    </QueryTemplates>
+    
+</FinderConfiguration>
