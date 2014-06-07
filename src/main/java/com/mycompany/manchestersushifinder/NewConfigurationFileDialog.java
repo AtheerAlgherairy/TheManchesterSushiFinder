@@ -919,7 +919,8 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
             try {
                 ontologyURL.setText(file.toURI().toURL().toString());
             } catch (MalformedURLException ex) {
-                Logger.getLogger(NewConfigurationFileDialog.class.getName()).log(Level.SEVERE, null, ex);
+               // Logger.getLogger(NewConfigurationFileDialog.class.getName()).log(Level.SEVERE, null, ex);
+                 JOptionPane.showMessageDialog(this, "  Sorry.. Cannot load the ontology", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
 
@@ -1091,15 +1092,15 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
                     iconURL.setText("");
                     resultCharClasseCombo.setSelectedIndex(-1);
                 } else {
-                    JOptionPane.showMessageDialog(null, "Characteristics icon is not selected.", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Characteristics icon is not selected.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
 
             } else {
-                JOptionPane.showMessageDialog(null, "Characteristics class is not selected.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Characteristics class is not selected.", "Error", JOptionPane.ERROR_MESSAGE);
             }
 
         } else {
-            JOptionPane.showMessageDialog(null, "You have to upload your ontology first!", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "You have to upload your ontology first!", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
 
