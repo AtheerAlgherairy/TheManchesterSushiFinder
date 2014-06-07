@@ -39,7 +39,16 @@ public class OntologyClass {
     private IRI ontologyIRI;
     private String ontologyLocation;
 
-   
+    
+    //This constructer to be used from NewConfigurationFileDialog
+    public OntologyClass(String ontologyLocation, boolean temp)
+    {
+        this.ontologyLocation=ontologyLocation;
+        loadMyOntology();
+        setupReasoner();   
+        shortFormProvider = new SimpleShortFormProvider();
+        
+    }
    
     public OntologyClass(String ontologyLocation) {
         if (Global.useDefault)

@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -82,7 +83,7 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         templateIDCount = 1;
-        templateIdTextField.setText(templateIDCount + "");
+        templateIdTextField.setText("ID"+templateIDCount);
         buttonGroup1.add(classRadioButton);
         buttonGroup1.add(templateRadioButton);
         jLabel23.setVisible(false);
@@ -690,15 +691,12 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-
-        try {
             //To create a FinderConfigurationDocument object and returns it
             doc = FinderConfigurationDocument.Factory.newInstance();
-
+            
             // addNewFinderConfiguration()method is called on the document object to
             //create and add a new FinderConfiguration Element to document
             finderConfigElement = doc.addNewFinderConfiguration();
-
 
             //Appearance Panel
             Logo logoElement = finderConfigElement.addNewLogo();
@@ -712,8 +710,6 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
                 includedLabelElement.setText(includedListLabel.getText().trim());
             }
 
-
-
             ExcludedLabel excludedLabelElement = finderConfigElement.addNewExcludedLabel();
             if (excludedListLabel.getText() != null) {
                 excludedLabelElement.setText(excludedListLabel.getText().trim());
@@ -725,8 +721,6 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
             }
 
             //Appearance Panel
-
-
             OntologyLocation ontologyLocElement = finderConfigElement.addNewOntologyLocation();
             if (ontologyURL.getText() != null) {
                 ontologyLocElement.setUrl(ontologyURL.getText().trim());
@@ -742,18 +736,20 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
                 resultsAnnoPropElement.setName(annoPropertiesCombo.getSelectedItem().toString());
             }
 
+        AvailableLanguages availableLangsElement = finderConfigElement.addNewAvailableLanguages();
 
-
+        if (list!=null)
+        {
             ArrayList<String> selectedLangs = new ArrayList<String>();
             for (int i = 0; i < list.getModel().getSize(); i++) {
                 CheckListItem item = (CheckListItem) list.getModel().getElementAt(i);
                 if (item.isSelected()) {
-                    System.out.println(item);
+             
                     selectedLangs.add(item.toString());
                 }
             }
 
-            AvailableLanguages availableLangsElement = finderConfigElement.addNewAvailableLanguages();
+ 
 
              if (!selectedLangs.isEmpty()) {
              //if there is no languages we dont need to have "default" so we can switch back to english
@@ -761,10 +757,8 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
              languageElement.setName("default");
              }
              
-
-
-            
-             for (int i = 0; i < selectedLangs.size(); i++) {
+                     
+           for (int i = 0; i < selectedLangs.size(); i++) {
              String value = selectedLangs.get(i).toString().trim().toLowerCase();
 
              //check whether the default language exists.
@@ -774,7 +768,11 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
              }
 
 
-             }
+             } 
+        } 
+
+
+    
             
 
 
@@ -858,46 +856,50 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
                 saveFile.showSaveDialog(this);
 
                 if (saveFile.getSelectedFile() != null) {
-                    FileOutputStream file = new FileOutputStream(saveFile.getSelectedFile().getPath().toString() + ".xml");
+                    FileOutputStream file = null;
+                    try {
+                        file = new FileOutputStream(saveFile.getSelectedFile().getPath().toString() + ".xml");
+                        //XmlOptions to request the use of  whitespace and
+                        //indent by 4 for nested levels
+                        XmlOptions xmlOptions = new XmlOptions();
+                        xmlOptions.setSavePrettyPrint();
+                        xmlOptions.setSavePrettyPrintIndent(4);
+                        doc.save(file, xmlOptions);
+                        //After Saving the new file. Do you want to use it?
+                        int answer;
+                        answer = JOptionPane.showConfirmDialog(this, "Do you want to use this new configuration file??\n\n", "New Configuration File", JOptionPane.YES_NO_OPTION);
+                        if (answer == JOptionPane.YES_OPTION) {
+                            Global.useDefault = false;
+                            Global.configFileURL = saveFile.getSelectedFile().getPath().toString() + ".xml";
+                            StartFrame.qframe.dispose();
+                            StartFrame newFrame = new StartFrame();
+                            newFrame.setVisible(true);
+                            this.dispose();
 
-
-                    //XmlOptions to request the use of  whitespace and 
-                    //indent by 4 for nested levels
-                    XmlOptions xmlOptions = new XmlOptions();
-                    xmlOptions.setSavePrettyPrint();
-                    xmlOptions.setSavePrettyPrintIndent(4);
-
-                    doc.save(file, xmlOptions);
-
-                    //After Saving the new file. Do you want to use it?
-                    int answer;
-                    answer = JOptionPane.showConfirmDialog(this, "Do you want to use this new configuration file??\n\n", "New Configuration File", JOptionPane.YES_NO_OPTION);
-                    if (answer == JOptionPane.YES_OPTION) {
-                        Global.useDefault = false;
-                        Global.configFileURL = saveFile.getSelectedFile().getPath().toString() + ".xml";
-                        StartFrame.qframe.dispose();
-                        StartFrame newFrame = new StartFrame();
-                        newFrame.setVisible(true);
-                        this.dispose();
-
-                    } else {
-                        this.dispose();
+                        } else {
+                            this.dispose();
+                        }
+                    } catch (FileNotFoundException ex) {
+                        Logger.getLogger(NewConfigurationFileDialog.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(NewConfigurationFileDialog.class.getName()).log(Level.SEVERE, null, ex);
+                    } finally {
+                        try {
+                            file.close();
+                        } catch (IOException ex) {
+                            Logger.getLogger(NewConfigurationFileDialog.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
 
                 }
 
             } else {
-                JOptionPane.showMessageDialog(this, "  Sorry.. Cannot Save the file!", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "  Not valid Sorry.. Cannot Save the file!", "Error", JOptionPane.ERROR_MESSAGE);
             }
 
 
 
 
-            // TODO add your handling code here:
-        } catch (Exception e) {
-            //Logger.getLogger(NewConfigurationFileDialog.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(this, "  Sorry.. Cannot Save the file!", "Error", JOptionPane.ERROR_MESSAGE);
-        }
 
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -928,8 +930,10 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
 
         //fill two combo boxes: classesCombo and annoPropertiesCombo , and Available languages list
         if (!ontologyURL.getText().isEmpty()) {
-            myOntology = new OntologyClass(ontologyURL.getText().trim());
+            myOntology = new OntologyClass(ontologyURL.getText().trim(),true);
 
+            ontologyIsUploaded = true;
+            
             annoPropertiesCombo.removeAllItems();
             for (OWLAnnotationProperty ann : myOntology.getOntology().getAnnotationPropertiesInSignature()) {
                 annoPropertiesCombo.addItem(ann.getIRI());
@@ -943,6 +947,16 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
             classesCombo.removeAllItems();
             resultCharClasseCombo.removeAllItems();
             baseClassCombo.removeAllItems();
+      
+        
+            //-------------------
+            resultsCharacteristics = new ArrayList<String>();
+            resultsIcons = new ArrayList<String>();
+            templateIDCount = 1;
+            templateIdTextField.setText("ID"+templateIDCount);
+            templates = new ArrayList<String[]>();
+            templatesCombo.removeAllItems();
+            //------------------------
 
             for (OWLClass cls : myOntology.getOntology().getClassesInSignature()) {
                 classesCombo.addItem(cls.getIRI());
@@ -1005,7 +1019,7 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
                 ontologyPanel.validate();
             }
 
-            ontologyIsUploaded = true;
+            
 
         }
 
@@ -1115,7 +1129,7 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
         String baseClassIRI = null;
         String objPropIRI = null;
         String thirdPart = null;
-        String templateID = "ID" + templateIDCount;
+        String templateID = templateIDCount+"";
         String templateName = null;
         String show = null;
 
@@ -1189,7 +1203,7 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
                 if (ans == JOptionPane.YES_OPTION) {
 
                     //------------reset---------------------
-                    templatesCombo.addItem(templateID);
+                    templatesCombo.addItem("ID"+templateID);
                     templateIDCount++;
                     templateIdTextField.setText("ID" + templateIDCount);
                     templatesCombo.setSelectedIndex(-1);
