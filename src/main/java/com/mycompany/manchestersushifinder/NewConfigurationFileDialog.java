@@ -904,7 +904,6 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
     private void uploadOntologyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadOntologyButtonActionPerformed
 
 
-
         JFileChooser fileChooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Ontology", "owl");
         fileChooser.setFileFilter(filter);

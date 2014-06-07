@@ -7,6 +7,7 @@ package com.mycompany.manchestersushifinder;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -34,11 +35,20 @@ public class Configurations {
     DocumentBuilder docBuilder;
     Element docElem;
     String configFileURL = null;
+   
 
     public Configurations() throws ParserConfigurationException, SAXException, IOException {
-        fXmlFile = new File(getConfigFileURL());
-        docBuilder = docBuilderFactory.newDocumentBuilder();
-        doc = docBuilder.parse(fXmlFile);
+        //fXmlFile = new File(getConfigFileURL());
+        //docBuilder = docBuilderFactory.newDocumentBuilder();
+        //doc = docBuilder.parse(fXmlFile);
+        if (Global.useDefault)
+        {
+        doc=getDocument("config.xml");
+        }
+        else
+        {
+          doc=getDocument(Global.configFileURL);  
+        }
     }
 
     public Element getRootElement() {
@@ -113,7 +123,9 @@ public class Configurations {
             
             if (Global.useDefault)
             {
-                ontologyURL=getClass().getResource(element.getAttribute("url")).toString();
+               
+               ontologyURL = element.getAttribute("url");
+                //ontologyURL=getClass().getResource(element.getAttribute("url")).toString();
             }
             else
             {
@@ -123,6 +135,33 @@ public class Configurations {
         return ontologyURL;
     }
 
+     private Document getDocument(String fileName) {
+        try {
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            // Attempt to load from file - if this doesn't
+            // work, load the embedded file.
+            File file = new File(fileName);
+            if(file.exists()) {
+                return documentBuilder.parse(file);
+            }
+            else {
+                InputStream is = getClass().getClassLoader().getResourceAsStream(fileName);
+                return documentBuilder.parse(is);
+            }
+        }
+        catch(IOException ioEx) {
+            ioEx.printStackTrace();
+        }
+        catch(SAXException saxEx) {
+            saxEx.printStackTrace();
+        }
+        catch(ParserConfigurationException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+     
     public String getClassRenderingUse() {
         String classRenderingUse = null;
         Element element = (Element) doc.getDocumentElement().getElementsByTagName("ClassRendering").item(0);

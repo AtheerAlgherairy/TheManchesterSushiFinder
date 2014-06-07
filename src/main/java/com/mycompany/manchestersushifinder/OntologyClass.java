@@ -4,7 +4,10 @@
  */
 package com.mycompany.manchestersushifinder;
 
+
 import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
 import javax.swing.JOptionPane;
@@ -39,12 +42,25 @@ public class OntologyClass {
    
    
     public OntologyClass(String ontologyLocation) {
+        if (Global.useDefault)
+        {
+            this.ontologyLocation=ontologyLocation;
+             InputStream is = getClass().getClassLoader().getResourceAsStream(ontologyLocation);
+            loadMyOntology(is);
+        setupReasoner();   
+        shortFormProvider = new SimpleShortFormProvider();
+        }
+        else {
         this.ontologyLocation=ontologyLocation;
         loadMyOntology();
         setupReasoner();   
         shortFormProvider = new SimpleShortFormProvider();
+        }
+      
 
     }
+    
+   
        
     public OWLDataFactory getDf() {
         return dataFactory;
@@ -74,12 +90,31 @@ public class OntologyClass {
             ontology = manager.loadOntologyFromOntologyDocument(myFile);
             ontologyIRI = ontology.getOntologyID().getOntologyIRI();
             
+
+            
         } catch (final Throwable e) {
             JOptionPane.showMessageDialog(null, "Sorry, could not load the ontology." + "[" + e.getMessage() + "]", "Error", JOptionPane.ERROR_MESSAGE);
             System.exit(1);
         }
     }
 
+    private void loadMyOntology(InputStream is) {
+        try {
+              
+            //URL url=new URL(ontologyLocation);
+            //File myFile = new File(url.getFile());
+            manager = OWLManager.createOWLOntologyManager();
+            dataFactory = manager.getOWLDataFactory();
+            ontology = manager.loadOntologyFromOntologyDocument(is);
+            ontologyIRI = ontology.getOntologyID().getOntologyIRI();
+            
+
+            
+        } catch (final Throwable e) {
+            JOptionPane.showMessageDialog(null, "Sorry, could not load the ontology." + "[" + e.getMessage() + "]", "Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
+        }
+    }
    
     //Set up Hermit reasoner:
     private void setupReasoner() {

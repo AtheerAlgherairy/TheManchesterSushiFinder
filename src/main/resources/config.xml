@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <FinderConfiguration>
-    <OntologyLocation url="/sushi_9223429_atheer.owl"/>
-    
-    
+    <OntologyLocation url="sushi_9223429_atheer.owl"/>
     <IngredientClass name="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SushiIngredient"/>
     
     <AvailableLanguages>
