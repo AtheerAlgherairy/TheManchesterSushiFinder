@@ -744,13 +744,10 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
             for (int i = 0; i < list.getModel().getSize(); i++) {
                 CheckListItem item = (CheckListItem) list.getModel().getElementAt(i);
                 if (item.isSelected()) {
-             
                     selectedLangs.add(item.toString());
                 }
             }
-
- 
-
+            
              if (!selectedLangs.isEmpty()) {
              //if there is no languages we dont need to have "default" so we can switch back to english
              Language languageElement = availableLangsElement.addNewLanguage();
@@ -760,16 +757,10 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
                      
            for (int i = 0; i < selectedLangs.size(); i++) {
              String value = selectedLangs.get(i).toString().trim().toLowerCase();
-
-             //check whether the default language exists.
-             if (!value.equalsIgnoreCase("default")) {
              Language languageElement = availableLangsElement.addNewLanguage();
              languageElement.setName(value);
-             }
-
-
              } 
-        } 
+        }
 
 
     
@@ -1214,9 +1205,9 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
 
                     //-------------add to templates array list--------
                     if (flag5) {
-                        templates.add(new String[]{templateID, templateName, show, baseClassIRI, objPropIRI, thirdPart, "Simple"});
+                        templates.add(new String[]{"ID"+templateID, templateName, show, baseClassIRI, objPropIRI, thirdPart, "Simple"});
                     } else {
-                        templates.add(new String[]{templateID, templateName, show, baseClassIRI, objPropIRI, thirdPart, "Complex"});
+                        templates.add(new String[]{"ID"+templateID, templateName, show, baseClassIRI, objPropIRI, thirdPart, "Complex"});
                     }
                 }
 
