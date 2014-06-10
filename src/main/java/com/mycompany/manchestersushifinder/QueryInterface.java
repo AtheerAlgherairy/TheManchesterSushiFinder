@@ -23,7 +23,6 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.DropMode;
 import javax.swing.ImageIcon;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -83,11 +82,15 @@ public class QueryInterface extends javax.swing.JFrame {
                         JRadioButton btn = (JRadioButton) e.getSource();
                         selectedLanguage = btn.getText();
 
-                        //re-render the two lists in the selected language
-                        jList1.setCellRenderer(new OWLClassListCellRenderer());
-                        jList2.setCellRenderer(new OWLClassListCellRenderer());
-
-                        //re-render the tree in the selected language
+                        //re-render the two lists in the query interface with the selected language
+                        jList1.setCellRenderer(new OWLClassListCellRenderer(selectedLanguage));
+                        jList2.setCellRenderer(new OWLClassListCellRenderer(selectedLanguage));
+                        
+                        //re-render the two lists in the faceted search panel with the selected language
+                        FacetedSearchPanel.ingredientsList.setCellRenderer(new OWLClassListCellRenderer(selectedLanguage));
+                        FacetedSearchPanel.characheristicsList.setCellRenderer(new CheckListRenderer());
+           
+                        //re-render the tree with the selected language
                         DefaultTreeCellRenderer renderer = new OWLClassTreeCellRenderer(selectedLanguage);
                         java.net.URL imgURL1 = QueryInterface.class.getResource("/icon1.png");
                         java.net.URL imgURL2 = QueryInterface.class.getResource("/icon2.png");
@@ -99,7 +102,7 @@ public class QueryInterface extends javax.swing.JFrame {
 
                         StartFrame.myTree.setCellRenderer(renderer);
 
-                        TreePanel.validate();
+                        BrowsingPanel.validate();
 
 
                     }
@@ -124,15 +127,15 @@ public class QueryInterface extends javax.swing.JFrame {
 //27 April--------Add data listener--------------
 
         IncludedList.addListDataListener(new ListDataListener() {
-            public void contentsChanged(ListDataEvent e) {            
+            public void contentsChanged(ListDataEvent e) {
                 updateNumberOfResults();
             }
 
-            public void intervalAdded(ListDataEvent e) {              
+            public void intervalAdded(ListDataEvent e) {
                 updateNumberOfResults();
             }
 
-            public void intervalRemoved(ListDataEvent e) {  
+            public void intervalRemoved(ListDataEvent e) {
                 updateNumberOfResults();
             }
         });
@@ -163,7 +166,7 @@ public class QueryInterface extends javax.swing.JFrame {
         this.jList1.setTransferHandler(new ToTransferHandler(TransferHandler.COPY));
         this.jList1.setDropMode(DropMode.INSERT);
         this.jList1.setDragEnabled(true);
-        ListCellRenderer myRenderer = new OWLClassListCellRenderer();
+        ListCellRenderer myRenderer = new OWLClassListCellRenderer(selectedLanguage);
 
         this.jList1.setCellRenderer(myRenderer);
 
@@ -269,12 +272,11 @@ public class QueryInterface extends javax.swing.JFrame {
         ChooserPanel = new javax.swing.JPanel();
         ContentPanel = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
-        TreePanel = new javax.swing.JPanel();
+        BrowsingPanel = new javax.swing.JPanel();
         noOfResultsLabel = new javax.swing.JLabel();
         SelectedThingsPanel = new javax.swing.JPanel();
         IncludedPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
         ExcludedPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jList2 = new javax.swing.JList();
@@ -321,16 +323,16 @@ public class QueryInterface extends javax.swing.JFrame {
 
         ContentPanel.setLayout(new java.awt.BorderLayout());
 
-        TreePanel.setPreferredSize(new java.awt.Dimension(59, 17));
-        TreePanel.setLayout(new java.awt.BorderLayout(7, 7));
+        BrowsingPanel.setPreferredSize(new java.awt.Dimension(59, 17));
+        BrowsingPanel.setLayout(new java.awt.BorderLayout(7, 7));
 
         noOfResultsLabel.setText("       ");
         noOfResultsLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         noOfResultsLabel.setMaximumSize(new java.awt.Dimension(25, 16));
         noOfResultsLabel.setMinimumSize(new java.awt.Dimension(25, 16));
-        TreePanel.add(noOfResultsLabel, java.awt.BorderLayout.PAGE_END);
+        BrowsingPanel.add(noOfResultsLabel, java.awt.BorderLayout.PAGE_END);
 
-        jSplitPane1.setLeftComponent(TreePanel);
+        jSplitPane1.setLeftComponent(BrowsingPanel);
 
         SelectedThingsPanel.setMinimumSize(new java.awt.Dimension(300, 480));
         SelectedThingsPanel.setLayout(new javax.swing.BoxLayout(SelectedThingsPanel, javax.swing.BoxLayout.Y_AXIS));
@@ -523,18 +525,6 @@ public class QueryInterface extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    void checkSatisfiable() {
-        Element templateElement = Global.myConfig.getNodeWithAttribute(Global.myConfig.getRootElement(), "Id", selectedTemplate);
-        QueryTemplateEngine myEngine = new QueryTemplateEngine(IncludedList, ExcludedList, templateElement, Global.myOntology.getDf(), Global.myOntology.getOntologyIRI(), Global.myOntology.getReasoner());
-        
-              if(!myEngine.getSatisfiable())
-                {
-                    System.out.println("NNNNooooooo");
-                     //JOptionPane.showMessageDialog(this,"Sorry. This is unsatisfiable ..\n", "Query Error", JOptionPane.ERROR_MESSAGE);
-                }
-
-
-    }
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         //Which Radio Button is selected?
@@ -630,6 +620,7 @@ public class QueryInterface extends javax.swing.JFrame {
     // public static void main(String[] args) {
     //}
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JPanel BrowsingPanel;
     public javax.swing.JPanel ChooserPanel;
     public javax.swing.JPanel ContentPanel;
     public javax.swing.JPanel ExcludedPanel;
@@ -640,9 +631,8 @@ public class QueryInterface extends javax.swing.JFrame {
     public javax.swing.JPanel RadioButtonsPanel;
     private javax.swing.JPanel SelectedThingsPanel;
     public java.awt.Label TitleLabel;
-    public javax.swing.JPanel TreePanel;
     private javax.swing.JButton jButton1;
-    private javax.swing.JList jList1;
+    public final javax.swing.JList jList1 = new javax.swing.JList();
     private javax.swing.JList jList2;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
@@ -668,7 +658,7 @@ class ToTransferHandler extends TransferHandler {
     }
 
     public boolean canImport(TransferHandler.TransferSupport support) {
-   
+
         // for the demo, we'll only support drops (not clipboard paste)
         if (!support.isDrop()) {
             return false;
@@ -718,15 +708,20 @@ class ToTransferHandler extends TransferHandler {
         list.setSelectedIndex(index);
         list.requestFocusInWindow();
 
-    
+
         return true;
-        
-       
+
+
     }
 }
 
 class OWLClassListCellRenderer implements ListCellRenderer {
 
+    String lang;
+
+    OWLClassListCellRenderer(String lang) {
+        this.lang = lang;
+    }
     protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
 
     public Component getListCellRendererComponent(JList list, Object value, int index,
@@ -738,7 +733,7 @@ class OWLClassListCellRenderer implements ListCellRenderer {
         String str = value.toString().substring(1, value.toString().length() - 1);
         IRI classIRI = IRI.create(str);
         OWLClass cls = Global.myOntology.getDf().getOWLClass(classIRI);
-        rendererLabel.setText(Global.myOntology.getOWLClassAlternativeLanguage(cls, QueryInterface.selectedLanguage));
+        rendererLabel.setText(Global.myOntology.getOWLClassAlternativeLanguage(cls, lang));
 
         return rendererLabel;
     }

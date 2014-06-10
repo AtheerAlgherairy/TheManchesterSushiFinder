@@ -7,8 +7,6 @@ package com.mycompany.manchestersushifinder;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -17,10 +15,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.AbstractButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -28,12 +24,10 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import noNamespace.ComplexTemplate;
-import noNamespace.ComplexTemplate.Template;
 import noNamespace.FinderConfigurationDocument;
 import noNamespace.FinderConfigurationDocument.FinderConfiguration.AvailableLanguages;
 import noNamespace.FinderConfigurationDocument.FinderConfiguration.AvailableLanguages.Language;
@@ -82,8 +76,10 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
     public NewConfigurationFileDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+      
+    
         templateIDCount = 1;
-        templateIdTextField.setText("ID"+templateIDCount);
+        templateIdTextField.setText("ID" + templateIDCount);
         buttonGroup1.add(classRadioButton);
         buttonGroup1.add(templateRadioButton);
         jLabel23.setVisible(false);
@@ -691,55 +687,54 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-            //To create a FinderConfigurationDocument object and returns it
-            doc = FinderConfigurationDocument.Factory.newInstance();
-            
-            // addNewFinderConfiguration()method is called on the document object to
-            //create and add a new FinderConfiguration Element to document
-            finderConfigElement = doc.addNewFinderConfiguration();
+        //To create a FinderConfigurationDocument object and returns it
+        doc = FinderConfigurationDocument.Factory.newInstance();
 
-            //Appearance Panel
-            Logo logoElement = finderConfigElement.addNewLogo();
+        // addNewFinderConfiguration()method is called on the document object to
+        //create and add a new FinderConfiguration Element to document
+        finderConfigElement = doc.addNewFinderConfiguration();
 
-            if (logoURL.getText() != null) {
-                logoElement.setURL(logoURL.getText().trim()); //get the URL
-            }
+        //Appearance Panel
+        Logo logoElement = finderConfigElement.addNewLogo();
 
-            IncludedLabel includedLabelElement = finderConfigElement.addNewIncludedLabel();
-            if (includedListLabel.getText() != null) {
-                includedLabelElement.setText(includedListLabel.getText().trim());
-            }
+        if (logoURL.getText() != null) {
+            logoElement.setURL(logoURL.getText().trim()); //get the URL
+        }
 
-            ExcludedLabel excludedLabelElement = finderConfigElement.addNewExcludedLabel();
-            if (excludedListLabel.getText() != null) {
-                excludedLabelElement.setText(excludedListLabel.getText().trim());
-            }
+        IncludedLabel includedLabelElement = finderConfigElement.addNewIncludedLabel();
+        if (includedListLabel.getText() != null) {
+            includedLabelElement.setText(includedListLabel.getText().trim());
+        }
 
-            TitleLabel titleLabelElement = finderConfigElement.addNewTitleLabel();
-            if (titleLabel.getText() != null) {
-                titleLabelElement.setText(titleLabel.getText().trim());
-            }
+        ExcludedLabel excludedLabelElement = finderConfigElement.addNewExcludedLabel();
+        if (excludedListLabel.getText() != null) {
+            excludedLabelElement.setText(excludedListLabel.getText().trim());
+        }
 
-            //Appearance Panel
-            OntologyLocation ontologyLocElement = finderConfigElement.addNewOntologyLocation();
-            if (ontologyURL.getText() != null) {
-                ontologyLocElement.setUrl(ontologyURL.getText().trim());
-            }
+        TitleLabel titleLabelElement = finderConfigElement.addNewTitleLabel();
+        if (titleLabel.getText() != null) {
+            titleLabelElement.setText(titleLabel.getText().trim());
+        }
 
-            IngredientClass ingredientClassElement = finderConfigElement.addNewIngredientClass();
-            if (classesCombo.getSelectedItem() != null) {
-                ingredientClassElement.setName(classesCombo.getSelectedItem().toString());
-            }
+        //Appearance Panel
+        OntologyLocation ontologyLocElement = finderConfigElement.addNewOntologyLocation();
+        if (ontologyURL.getText() != null) {
+            ontologyLocElement.setUrl(ontologyURL.getText().trim());
+        }
 
-            ResultsAnnotationProperty resultsAnnoPropElement = finderConfigElement.addNewResultsAnnotationProperty();
-            if (annoPropertiesCombo.getSelectedItem() != null) {
-                resultsAnnoPropElement.setName(annoPropertiesCombo.getSelectedItem().toString());
-            }
+        IngredientClass ingredientClassElement = finderConfigElement.addNewIngredientClass();
+        if (classesCombo.getSelectedItem() != null) {
+            ingredientClassElement.setName(classesCombo.getSelectedItem().toString());
+        }
+
+        ResultsAnnotationProperty resultsAnnoPropElement = finderConfigElement.addNewResultsAnnotationProperty();
+        if (annoPropertiesCombo.getSelectedItem() != null) {
+            resultsAnnoPropElement.setName(annoPropertiesCombo.getSelectedItem().toString());
+        }
 
         AvailableLanguages availableLangsElement = finderConfigElement.addNewAvailableLanguages();
 
-        if (list!=null)
-        {
+        if (list != null) {
             ArrayList<String> selectedLangs = new ArrayList<String>();
             for (int i = 0; i < list.getModel().getSize(); i++) {
                 CheckListItem item = (CheckListItem) list.getModel().getElementAt(i);
@@ -747,146 +742,146 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
                     selectedLangs.add(item.toString());
                 }
             }
-            
-             if (!selectedLangs.isEmpty()) {
-             //if there is no languages we dont need to have "default" so we can switch back to english
-             Language languageElement = availableLangsElement.addNewLanguage();
-             languageElement.setName("default");
-             }
-             
-                     
-           for (int i = 0; i < selectedLangs.size(); i++) {
-             String value = selectedLangs.get(i).toString().trim().toLowerCase();
-             Language languageElement = availableLangsElement.addNewLanguage();
-             languageElement.setName(value);
-             } 
+
+            if (!selectedLangs.isEmpty()) {
+                //if there is no languages we dont need to have "default" so we can switch back to english
+                Language languageElement = availableLangsElement.addNewLanguage();
+                languageElement.setName("default");
+            }
+
+
+            for (int i = 0; i < selectedLangs.size(); i++) {
+                String value = selectedLangs.get(i).toString().trim().toLowerCase();
+                Language languageElement = availableLangsElement.addNewLanguage();
+                languageElement.setName(value);
+            }
         }
 
 
-    
-            
 
 
-            ClassRendering classRenderingElement = finderConfigElement.addNewClassRendering();
 
-            if (classRenderCombo.getSelectedItem() != null) {
-                classRenderingElement.setUse(classRenderCombo.getSelectedItem().toString());
-            } else {
-                classRenderingElement.setUse("IRI");
+
+        ClassRendering classRenderingElement = finderConfigElement.addNewClassRendering();
+
+        if (classRenderCombo.getSelectedItem() != null) {
+            classRenderingElement.setUse(classRenderCombo.getSelectedItem().toString());
+        } else {
+            classRenderingElement.setUse("IRI");
+        }
+
+        ResultsCharacteristics resultsCharacteristicsElement = finderConfigElement.addNewResultsCharacteristics();
+        if (!resultsCharacteristics.isEmpty() && !resultsIcons.isEmpty()) {
+            for (int i = 0; i < resultsCharacteristics.size(); i++) {
+                ResultsCharacteristic resultsCharacteristicElement = resultsCharacteristicsElement.addNewResultsCharacteristic();
+                resultsCharacteristicElement.setClass1(resultsCharacteristics.get(i));
+                resultsCharacteristicElement.setUrl(resultsIcons.get(i));
             }
-
-            ResultsCharacteristics resultsCharacteristicsElement = finderConfigElement.addNewResultsCharacteristics();
-            if (!resultsCharacteristics.isEmpty() && !resultsIcons.isEmpty()) {
-                for (int i = 0; i < resultsCharacteristics.size(); i++) {
-                    ResultsCharacteristic resultsCharacteristicElement = resultsCharacteristicsElement.addNewResultsCharacteristic();
-                    resultsCharacteristicElement.setClass1(resultsCharacteristics.get(i));
-                    resultsCharacteristicElement.setUrl(resultsIcons.get(i));
-                }
-            }
+        }
 
 
-            QueryTemplates queryTemplatesElement = finderConfigElement.addNewQueryTemplates();
-            if (!templates.isEmpty()) {
-                for (int i = 0; i < templates.size(); i++) {
-                    if (templates.get(i)[6].equalsIgnoreCase("Simple")) { //template type
+        QueryTemplates queryTemplatesElement = finderConfigElement.addNewQueryTemplates();
+        if (!templates.isEmpty()) {
+            for (int i = 0; i < templates.size(); i++) {
+                if (templates.get(i)[6].equalsIgnoreCase("Simple")) { //template type
 
-                        SimpleTemplate simpleTemplateElement = queryTemplatesElement.addNewSimpleTemplate();
-                        simpleTemplateElement.setId(templates.get(i)[0]); //id
-                        simpleTemplateElement.setName(templates.get(i)[1]); //name
+                    SimpleTemplate simpleTemplateElement = queryTemplatesElement.addNewSimpleTemplate();
+                    simpleTemplateElement.setId(templates.get(i)[0]); //id
+                    simpleTemplateElement.setName(templates.get(i)[1]); //name
 
-                        if (templates.get(i)[2].equalsIgnoreCase("yes")) //show
-                        {
-                            simpleTemplateElement.setShow(Show.YES);
-                        } else {
-                            simpleTemplateElement.setShow(Show.NO);
-                        }
-
-                        BaseClass baseClassElement = simpleTemplateElement.addNewBaseClass();
-                        baseClassElement.setName(templates.get(i)[3]); //base IRI
-
-                        Property propertyElement = simpleTemplateElement.addNewProperty();
-                        propertyElement.setName(templates.get(i)[4]); //property IRI
-
-                        ComponentClass componentClassElement = simpleTemplateElement.addNewComponentClass();
-                        componentClassElement.setName(templates.get(i)[5]); //component IRI
-
-
-                    } else //complex template
+                    if (templates.get(i)[2].equalsIgnoreCase("yes")) //show
                     {
-                        ComplexTemplate complexTemplateElement = queryTemplatesElement.addNewComplexTemplate();
-                        complexTemplateElement.setId(templates.get(i)[0]); //id
-                        complexTemplateElement.setName(templates.get(i)[1]); //name
-
-                        if (templates.get(i)[2].equalsIgnoreCase("yes")) //show
-                        {
-                            complexTemplateElement.setShow(ComplexTemplate.Show.YES);
-                        } else {
-                            complexTemplateElement.setShow(ComplexTemplate.Show.NO);
-                        }
-
-                        ComplexTemplate.BaseClass baseClassElement = complexTemplateElement.addNewBaseClass();
-                        baseClassElement.setName(templates.get(i)[3]); //base IRI
-
-                        ComplexTemplate.Property propertyElement = complexTemplateElement.addNewProperty();
-                        propertyElement.setName(templates.get(i)[4]); //property IRI
-
-                        ComplexTemplate.Template templateElement = complexTemplateElement.addNewTemplate();
-                        templateElement.setRef(templates.get(i)[5]); // other template ID 
+                        simpleTemplateElement.setShow(Show.YES);
+                    } else {
+                        simpleTemplateElement.setShow(Show.NO);
                     }
+
+                    BaseClass baseClassElement = simpleTemplateElement.addNewBaseClass();
+                    baseClassElement.setName(templates.get(i)[3]); //base IRI
+
+                    Property propertyElement = simpleTemplateElement.addNewProperty();
+                    propertyElement.setName(templates.get(i)[4]); //property IRI
+
+                    ComponentClass componentClassElement = simpleTemplateElement.addNewComponentClass();
+                    componentClassElement.setName(templates.get(i)[5]); //component IRI
+
+
+                } else //complex template
+                {
+                    ComplexTemplate complexTemplateElement = queryTemplatesElement.addNewComplexTemplate();
+                    complexTemplateElement.setId(templates.get(i)[0]); //id
+                    complexTemplateElement.setName(templates.get(i)[1]); //name
+
+                    if (templates.get(i)[2].equalsIgnoreCase("yes")) //show
+                    {
+                        complexTemplateElement.setShow(ComplexTemplate.Show.YES);
+                    } else {
+                        complexTemplateElement.setShow(ComplexTemplate.Show.NO);
+                    }
+
+                    ComplexTemplate.BaseClass baseClassElement = complexTemplateElement.addNewBaseClass();
+                    baseClassElement.setName(templates.get(i)[3]); //base IRI
+
+                    ComplexTemplate.Property propertyElement = complexTemplateElement.addNewProperty();
+                    propertyElement.setName(templates.get(i)[4]); //property IRI
+
+                    ComplexTemplate.Template templateElement = complexTemplateElement.addNewTemplate();
+                    templateElement.setRef(templates.get(i)[5]); // other template ID 
                 }
             }
+        }
 
 
-            if (doc.validate()) {
-                JFileChooser saveFile = new JFileChooser();
-                FileNameExtensionFilter filter = new FileNameExtensionFilter("XML File", "xml");
-                saveFile.setFileFilter(filter);
-                saveFile.addChoosableFileFilter(filter);
-                saveFile.setAcceptAllFileFilterUsed(false);
-                saveFile.setApproveButtonText("Save as");
-                saveFile.showSaveDialog(this);
+        if (doc.validate()) {
+            JFileChooser saveFile = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("XML File", "xml");
+            saveFile.setFileFilter(filter);
+            saveFile.addChoosableFileFilter(filter);
+            saveFile.setAcceptAllFileFilterUsed(false);
+            saveFile.setApproveButtonText("Save as");
+            saveFile.showSaveDialog(this);
 
-                if (saveFile.getSelectedFile() != null) {
-                    FileOutputStream file = null;
+            if (saveFile.getSelectedFile() != null) {
+                FileOutputStream file = null;
+                try {
+                    file = new FileOutputStream(saveFile.getSelectedFile().getPath().toString() + ".xml");
+                    //XmlOptions to request the use of  whitespace and
+                    //indent by 4 for nested levels
+                    XmlOptions xmlOptions = new XmlOptions();
+                    xmlOptions.setSavePrettyPrint();
+                    xmlOptions.setSavePrettyPrintIndent(4);
+                    doc.save(file, xmlOptions);
+                    //After Saving the new file. Do you want to use it?
+                    int answer;
+                    answer = JOptionPane.showConfirmDialog(this, "Do you want to use this new configuration file??\n\n", "New Configuration File", JOptionPane.YES_NO_OPTION);
+                    if (answer == JOptionPane.YES_OPTION) {
+                        Global.useDefault = false;
+                        Global.configFileURL = saveFile.getSelectedFile().getPath().toString() + ".xml";
+                        StartFrame.qframe.dispose();
+                        StartFrame newFrame = new StartFrame();
+                        newFrame.setVisible(true);
+                        this.dispose();
+
+                    } else {
+                        this.dispose();
+                    }
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(NewConfigurationFileDialog.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(NewConfigurationFileDialog.class.getName()).log(Level.SEVERE, null, ex);
+                } finally {
                     try {
-                        file = new FileOutputStream(saveFile.getSelectedFile().getPath().toString() + ".xml");
-                        //XmlOptions to request the use of  whitespace and
-                        //indent by 4 for nested levels
-                        XmlOptions xmlOptions = new XmlOptions();
-                        xmlOptions.setSavePrettyPrint();
-                        xmlOptions.setSavePrettyPrintIndent(4);
-                        doc.save(file, xmlOptions);
-                        //After Saving the new file. Do you want to use it?
-                        int answer;
-                        answer = JOptionPane.showConfirmDialog(this, "Do you want to use this new configuration file??\n\n", "New Configuration File", JOptionPane.YES_NO_OPTION);
-                        if (answer == JOptionPane.YES_OPTION) {
-                            Global.useDefault = false;
-                            Global.configFileURL = saveFile.getSelectedFile().getPath().toString() + ".xml";
-                            StartFrame.qframe.dispose();
-                            StartFrame newFrame = new StartFrame();
-                            newFrame.setVisible(true);
-                            this.dispose();
-
-                        } else {
-                            this.dispose();
-                        }
-                    } catch (FileNotFoundException ex) {
-                        Logger.getLogger(NewConfigurationFileDialog.class.getName()).log(Level.SEVERE, null, ex);
+                        file.close();
                     } catch (IOException ex) {
                         Logger.getLogger(NewConfigurationFileDialog.class.getName()).log(Level.SEVERE, null, ex);
-                    } finally {
-                        try {
-                            file.close();
-                        } catch (IOException ex) {
-                            Logger.getLogger(NewConfigurationFileDialog.class.getName()).log(Level.SEVERE, null, ex);
-                        }
                     }
-
                 }
 
-            } else {
-                JOptionPane.showMessageDialog(this, "  Not valid Sorry.. Cannot Save the file!", "Error", JOptionPane.ERROR_MESSAGE);
             }
+
+        } else {
+            JOptionPane.showMessageDialog(this, "  Not valid Sorry.. Cannot Save the file!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
 
 
@@ -912,8 +907,8 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
             try {
                 ontologyURL.setText(file.toURI().toURL().toString());
             } catch (MalformedURLException ex) {
-               // Logger.getLogger(NewConfigurationFileDialog.class.getName()).log(Level.SEVERE, null, ex);
-                 JOptionPane.showMessageDialog(this, "  Sorry.. Cannot load the ontology", "Error", JOptionPane.ERROR_MESSAGE);
+                // Logger.getLogger(NewConfigurationFileDialog.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(this, "  Sorry.. Cannot load the ontology", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
 
@@ -921,10 +916,10 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
 
         //fill two combo boxes: classesCombo and annoPropertiesCombo , and Available languages list
         if (!ontologyURL.getText().isEmpty()) {
-            myOntology = new OntologyClass(ontologyURL.getText().trim(),true);
+            myOntology = new OntologyClass(ontologyURL.getText().trim(), true);
 
             ontologyIsUploaded = true;
-            
+
             annoPropertiesCombo.removeAllItems();
             for (OWLAnnotationProperty ann : myOntology.getOntology().getAnnotationPropertiesInSignature()) {
                 annoPropertiesCombo.addItem(ann.getIRI());
@@ -938,13 +933,13 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
             classesCombo.removeAllItems();
             resultCharClasseCombo.removeAllItems();
             baseClassCombo.removeAllItems();
-      
-        
+
+
             //-------------------
             resultsCharacteristics = new ArrayList<String>();
             resultsIcons = new ArrayList<String>();
             templateIDCount = 1;
-            templateIdTextField.setText("ID"+templateIDCount);
+            templateIdTextField.setText("ID" + templateIDCount);
             templates = new ArrayList<String[]>();
             templatesCombo.removeAllItems();
             //------------------------
@@ -1010,7 +1005,7 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
                 ontologyPanel.validate();
             }
 
-            
+
 
         }
 
@@ -1120,7 +1115,7 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
         String baseClassIRI = null;
         String objPropIRI = null;
         String thirdPart = null;
-        String templateID = templateIDCount+"";
+        String templateID = templateIDCount + "";
         String templateName = null;
         String show = null;
 
@@ -1194,7 +1189,7 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
                 if (ans == JOptionPane.YES_OPTION) {
 
                     //------------reset---------------------
-                    templatesCombo.addItem("ID"+templateID);
+                    templatesCombo.addItem("ID" + templateID);
                     templateIDCount++;
                     templateIdTextField.setText("ID" + templateIDCount);
                     templatesCombo.setSelectedIndex(-1);
@@ -1205,9 +1200,9 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
 
                     //-------------add to templates array list--------
                     if (flag5) {
-                        templates.add(new String[]{"ID"+templateID, templateName, show, baseClassIRI, objPropIRI, thirdPart, "Simple"});
+                        templates.add(new String[]{"ID" + templateID, templateName, show, baseClassIRI, objPropIRI, thirdPart, "Simple"});
                     } else {
-                        templates.add(new String[]{"ID"+templateID, templateName, show, baseClassIRI, objPropIRI, thirdPart, "Complex"});
+                        templates.add(new String[]{"ID" + templateID, templateName, show, baseClassIRI, objPropIRI, thirdPart, "Complex"});
                     }
                 }
 

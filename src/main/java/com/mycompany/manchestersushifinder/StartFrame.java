@@ -8,14 +8,18 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -32,35 +36,33 @@ public class StartFrame extends javax.swing.JFrame {
     public static JTree myTree;
     public static Global global;
     public static QueryInterface qframe;
-    
-    Timer timer= new Timer(600, new ActionListener() {
-			private String text = "Please wait for loading ...";
-                        private boolean flag=true;
-			public void actionPerformed(ActionEvent e) {
-                            if (flag)
-                            {
-                                jLabel2.setText(text);
-                                flag=false;
-                            }
-                            else
-                            {
-                               jLabel2.setText("");
-                                flag=true; 
-                            }
-			}
-		});
+    public static FacetedSearchPanel secondView;
+    Timer timer = new Timer(600, new ActionListener() {
+        private String text = "Please wait for loading ...";
+        private boolean flag = true;
+
+        public void actionPerformed(ActionEvent e) {
+            if (flag) {
+                jLabel2.setText(text);
+                flag = false;
+            } else {
+                jLabel2.setText("");
+                flag = true;
+            }
+        }
+    });
 
     /**
      * Creates new form StartFrame
      */
     public StartFrame() {
         initComponents();
-  
+
         timer.start();
         Runnable r = new Runnable() {
             public void run() {
                 global = new Global(); //loading the configuration file & ontology
-                
+
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         setupQueryInterface();
@@ -71,7 +73,7 @@ public class StartFrame extends javax.swing.JFrame {
                 });
             }
         };
-       Thread t = new Thread(r);
+        Thread t = new Thread(r);
         t.start();
 
     }
@@ -138,24 +140,46 @@ public class StartFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     public static void setupQueryInterface() {
-         qframe = new QueryInterface();
+        qframe = new QueryInterface();
 
-        // Build the tree
+        // Creating firstView panel 
+        JPanel firstView=new JPanel();
+        //Build the tree.
         ingTreeBuilder = new IngredientsTreeBuilder("default");
         myTree = ingTreeBuilder.buildTree();
-
-        //1- Add my tree to the frame.
         myTree.setDragEnabled(true);
         myTree.setToolTipText("Drag and Drop..");
-
         JScrollPane jscrollpane1 = new JScrollPane(myTree);
         jscrollpane1.validate();
+        //Add the tree to the firstView panel
+        firstView.add(jscrollpane1);
 
-        qframe.TreePanel.add(jscrollpane1);
-        qframe.TreePanel.validate();
+        //qframe.TreePanel.add(jscrollpane1);
 
 
- 
+
+        //----------Creating Second View: FacetedSearchPanel---
+        OntologyClass myOntologyClass;
+        if (Global.myOntology == null) {
+            myOntologyClass = new OntologyClass(Global.myConfig.getOntologyLocation());
+        } else {
+            myOntologyClass = Global.myOntology;
+        }
+            secondView = new FacetedSearchPanel("default", myOntologyClass, Global.myConfig.getIngredientsCharacteristics());
+        //-------------------------------------------------------
+
+            
+        //Creating Tabs: 1-firstView (tree) 2-secondView (faceted)
+        JTabbedPane tabbedPane = new JTabbedPane();     
+        tabbedPane.addTab("Tree Browse",jscrollpane1);
+        tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);       
+        tabbedPane.addTab("Faceted Browse",secondView);
+        tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
+        qframe.BrowsingPanel.add(tabbedPane);
+        qframe.BrowsingPanel.validate();
+
+
+
         try {
 
             //2- form configurations, set the labels and logo.

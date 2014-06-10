@@ -12,11 +12,22 @@
     
     <Logo URL="/SushiLogo.png"/>
     
+   
+    
     <TitleLabel text="Suhsi Box "/>
     <IncludedLabel />
     <ExcludedLabel />
     
 <ClassRendering use="label"/> <!--label Or IRI  -->
+   
+   <ingredientsCharacteristics>
+      <ingredientsCharacteristic name="Vegan" class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#VeganIngredient" /> 
+    <ingredientsCharacteristic name="Vegetarian" class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#VegetarianIngredient" />
+      <ingredientsCharacteristic name="Spicy" class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SpicyIngredient" /> 
+       <ingredientsCharacteristic name="Sweet" class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SweetIngredient" /> 
+        <ingredientsCharacteristic name="Meat" class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#Meat" /> 
+<ingredientsCharacteristic name="Seafood" class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SeaFood" /> 
+   </ingredientsCharacteristics>
    
     <ResultsAnnotationProperty name="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#description"/>
     <!-- http://www.w3.org/2000/01/rdf-schema#comment -->

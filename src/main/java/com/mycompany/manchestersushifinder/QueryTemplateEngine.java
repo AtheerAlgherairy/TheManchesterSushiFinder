@@ -4,6 +4,7 @@
  */
 package com.mycompany.manchestersushifinder;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -44,6 +45,12 @@ public class QueryTemplateEngine {
         this.df = df;
         this.ontologyIRI = ontologyIRI;
      
+        this.reasoner=reasoner;
+    }
+    
+   public QueryTemplateEngine(OWLDataFactory df, IRI ontologyIRI,OWLReasoner reasoner) {
+        this.df = df;
+        this.ontologyIRI = ontologyIRI;
         this.reasoner=reasoner;
     }
 
@@ -206,6 +213,17 @@ public class QueryTemplateEngine {
         OWLClassExpression resultExpr = df.getOWLObjectIntersectionOf(classes);
         return resultExpr;
     }
+    
+    //For Faceted Search (view)
+    public Collection getIngredientsWithCharacteristics(Set<OWLClass> classes)
+    {
+            classes.add(df.getOWLClass(Global.myConfig.getIngredientClass()));
+            OWLClassExpression resultExpr = df.getOWLObjectIntersectionOf(classes);
+            
+            return onlySatisfiableClasses(reasoner.getSubClasses(resultExpr, false));
+    }
+    //-------------------------------------------------
+    
 
     public static OWLClassExpression getResultedClassExprForComplexTemplate(Element e, Set<OWLClass> includedThings, Set<OWLClass> excludedThings, OWLDataFactory df, IRI ontologyIRI) {
         Element baseElem = (Element) e.getElementsByTagName("BaseClass").item(0);

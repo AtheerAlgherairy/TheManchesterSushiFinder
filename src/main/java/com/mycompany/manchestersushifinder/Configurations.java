@@ -291,6 +291,68 @@ public class Configurations {
         return cls;
 
     }
+    
+    
+      public ArrayList<OWLClass> getIngredientsCharacteristics() {
+
+        ArrayList<OWLClass> cls = new ArrayList<OWLClass>();
+        IRI classIRI = null;
+        Element element = (Element) doc.getDocumentElement().getElementsByTagName("ingredientsCharacteristics").item(0);
+        if (element != null) {
+            NodeList nl = element.getChildNodes();
+            for (int i = 0; i < nl.getLength(); i++) {
+                Node n = nl.item(i);
+                if (n instanceof Element) {
+                    Element el = (Element) n;
+                    classIRI = IRI.create(el.getAttribute("class").toString());
+                    OWLClass c = Global.myOntology.getDf().getOWLClass(classIRI);
+                    cls.add(c);
+                }
+            }//end for
+        }
+        return cls;
+
+    }
+      
+   public String getIngredientsCharacteristicName(OWLClass cls) {
+        String name = null;
+        Element element = (Element) doc.getDocumentElement().getElementsByTagName("ingredientsCharacteristics").item(0);
+        NodeList nl = element.getChildNodes();
+        for (int i = 0; i < nl.getLength(); i++) {
+            Node n = nl.item(i);
+            if (n instanceof Element) {
+                Element el = (Element) n;
+                String strClassIRI=cls.getIRI().toString();
+                if (el.getAttribute("class").toString().equals(strClassIRI)) {
+                 
+                    name = el.getAttribute("name").toString();
+                }
+            }
+        }//end for
+
+        return name;
+    }
+   
+   public OWLClass getIngredientsCharacteristicOWLClass(String name) {
+        IRI classIRI = null;
+        OWLClass cls=null;
+        Element element = (Element) doc.getDocumentElement().getElementsByTagName("ingredientsCharacteristics").item(0);
+        NodeList nl = element.getChildNodes();
+        for (int i = 0; i < nl.getLength(); i++) {
+            Node n = nl.item(i);
+            if (n instanceof Element) {
+                Element el = (Element) n;
+                if (el.getAttribute("name").toString().equals(name)) {
+                 
+                    classIRI = IRI.create(el.getAttribute("class").toString());
+                    cls = Global.myOntology.getDf().getOWLClass(classIRI);
+                  
+                }
+            }
+        }//end for
+
+        return cls;
+    }
     //--------------------------------------------------
     //This function returns the element with attName=attValue
     //To be used in returning query template based on its ID
