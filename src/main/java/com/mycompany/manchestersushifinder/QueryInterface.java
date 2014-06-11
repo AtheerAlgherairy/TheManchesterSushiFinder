@@ -4,6 +4,7 @@
  */
 package com.mycompany.manchestersushifinder;
 
+import static com.mycompany.manchestersushifinder.DirectSearchPanel.componentsList;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Rectangle;
@@ -88,7 +89,10 @@ public class QueryInterface extends javax.swing.JFrame {
                         
                         //re-render the two lists in the faceted search panel with the selected language
                         FacetedSearchPanel.ingredientsList.setCellRenderer(new OWLClassListCellRenderer(selectedLanguage));
-                        FacetedSearchPanel.characheristicsList.setCellRenderer(new CheckListRenderer());
+                        FacetedSearchPanel.CharacteristicsList.setCellRenderer(new CheckListRenderer());
+                       
+                        //re-render the list in the direct search panel with the selected language
+                        DirectSearchPanel.componentsList.setCellRenderer(new OWLClassListCellRenderer(selectedLanguage));
            
                         //re-render the tree with the selected language
                         DefaultTreeCellRenderer renderer = new OWLClassTreeCellRenderer(selectedLanguage);
@@ -273,7 +277,6 @@ public class QueryInterface extends javax.swing.JFrame {
         ContentPanel = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
         BrowsingPanel = new javax.swing.JPanel();
-        noOfResultsLabel = new javax.swing.JLabel();
         SelectedThingsPanel = new javax.swing.JPanel();
         IncludedPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -284,6 +287,7 @@ public class QueryInterface extends javax.swing.JFrame {
         RadioButtonsPanel = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         languagePanel = new javax.swing.JPanel();
+        noOfResultsLabel = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
@@ -325,13 +329,6 @@ public class QueryInterface extends javax.swing.JFrame {
 
         BrowsingPanel.setPreferredSize(new java.awt.Dimension(59, 17));
         BrowsingPanel.setLayout(new java.awt.BorderLayout(7, 7));
-
-        noOfResultsLabel.setText("       ");
-        noOfResultsLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        noOfResultsLabel.setMaximumSize(new java.awt.Dimension(25, 16));
-        noOfResultsLabel.setMinimumSize(new java.awt.Dimension(25, 16));
-        BrowsingPanel.add(noOfResultsLabel, java.awt.BorderLayout.PAGE_END);
-
         jSplitPane1.setLeftComponent(BrowsingPanel);
 
         SelectedThingsPanel.setMinimumSize(new java.awt.Dimension(300, 480));
@@ -418,6 +415,11 @@ public class QueryInterface extends javax.swing.JFrame {
         languagePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Alternative Language(s)"));
         languagePanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
+        noOfResultsLabel.setText("       ");
+        noOfResultsLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        noOfResultsLabel.setMaximumSize(new java.awt.Dimension(25, 16));
+        noOfResultsLabel.setMinimumSize(new java.awt.Dimension(25, 16));
+
         javax.swing.GroupLayout FooterPanelLayout = new javax.swing.GroupLayout(FooterPanel);
         FooterPanel.setLayout(FooterPanelLayout);
         FooterPanelLayout.setHorizontalGroup(
@@ -428,19 +430,23 @@ public class QueryInterface extends javax.swing.JFrame {
                     .addComponent(RadioButtonsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 662, Short.MAX_VALUE)
                     .addComponent(languagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(FooterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
+                    .addComponent(noOfResultsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         FooterPanelLayout.setVerticalGroup(
             FooterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(FooterPanelLayout.createSequentialGroup()
-                .addGroup(FooterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(FooterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(FooterPanelLayout.createSequentialGroup()
                         .addComponent(RadioButtonsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
                         .addComponent(languagePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(FooterPanelLayout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(noOfResultsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 0, 0))
         );

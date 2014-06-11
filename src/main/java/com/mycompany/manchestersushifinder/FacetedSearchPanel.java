@@ -6,19 +6,12 @@ package com.mycompany.manchestersushifinder;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.lang.reflect.Array;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeSet;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
@@ -41,7 +34,7 @@ public class FacetedSearchPanel extends javax.swing.JPanel {
     private Set<OWLClass> selectedClasses = new TreeSet<OWLClass>();
     private String lang;
     private ArrayList<OWLClass> ingredientsCharacteristics;
-    public static JList characheristicsList;
+    public static JList CharacteristicsList;
 
     public FacetedSearchPanel(String lang, OntologyClass myOntologyClass, ArrayList<OWLClass> ingredientsCharacteristics) {
         initComponents();
@@ -52,7 +45,7 @@ public class FacetedSearchPanel extends javax.swing.JPanel {
         buildList();
     }
 
-    public void fillIngredientsCharacteristicsLists() {
+    private void fillIngredientsCharacteristicsLists() {
         if (!ingredientsCharacteristics.isEmpty()) {
             addCharacteristicsCheckboxes(ingredientsCharacteristics);
         }
@@ -69,14 +62,11 @@ public class FacetedSearchPanel extends javax.swing.JPanel {
 
             myCheckList[i] = new CheckListItem(classes.get(i));
         }
-        characheristicsList = new JList(myCheckList);
-        characheristicsList.setPreferredSize(new Dimension(200, 100));
-        characheristicsList.setMinimumSize(new Dimension(200, 100));
-        characheristicsList.setVisibleRowCount(5);
-        characheristicsList.setCellRenderer(new CheckListRenderer());
-        characheristicsList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        CharacteristicsList = new JList(myCheckList);    
+        CharacteristicsList.setCellRenderer(new CheckListRenderer());
+        CharacteristicsList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
-        characheristicsList.addMouseListener(new MouseAdapter() {
+        CharacteristicsList.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent event) {
                 JList list = (JList) event.getSource();
                 int index = list.locationToIndex(event.getPoint());
@@ -94,9 +84,15 @@ public class FacetedSearchPanel extends javax.swing.JPanel {
             }
         });
 
-        characheristicsList.validate();
-        JScrollPane scrollPane= new JScrollPane(characheristicsList);    
-        dynamicPanel.add(scrollPane);    
+        CharacteristicsList.validate();
+        JScrollPane scrollPane= new JScrollPane(CharacteristicsList,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);  
+       if(CharacteristicsList.getModel().getSize()>4)
+        scrollPane.setPreferredSize(new Dimension(210, 110));
+       else
+         scrollPane.setPreferredSize(new Dimension(210, 99));
+       
+        scrollPane.validate();
+        dynamicPanel.add(scrollPane);
         dynamicPanel.doLayout();
         dynamicPanel.validate();
         characteristicsPanel.add(dynamicPanel);
@@ -104,10 +100,8 @@ public class FacetedSearchPanel extends javax.swing.JPanel {
     }
 
     private void buildList() {
-        JScrollPane scrollPane = new JScrollPane();
+      
         DefaultListModel ingredientsListModel = new DefaultListModel();
-
-
         QueryTemplateEngine myEngine = new QueryTemplateEngine(myOntologyClass.getDf(), myOntologyClass.getOntologyIRI(), myOntologyClass.getReasoner());
         Collection resultCollection = myEngine.getIngredientsWithCharacteristics(selectedClasses);
         Object[] arr = resultCollection.toArray();
@@ -116,42 +110,17 @@ public class FacetedSearchPanel extends javax.swing.JPanel {
             ingredientsListModel.addElement(arr[i]);
         }
 
-        JList ingredientsList = new JList(ingredientsListModel);
-        ListCellRenderer myRenderer = new OWLClassListCellRenderer();
-
-
+        ListCellRenderer myRenderer = new OWLClassListCellRenderer(QueryInterface.selectedLanguage);
         FacetedSearchPanel.ingredientsList.setCellRenderer(myRenderer);
         FacetedSearchPanel.ingredientsList.setDragEnabled(true);
-
         FacetedSearchPanel.ingredientsList.setModel(ingredientsListModel);
         FacetedSearchPanel.ingredientsList.validate();
         FacetedSearchPanel.ingredientsList.repaint();
-        scrollPane.add(ingredientsList);
-        scrollPane.validate();
-        ingredientsPanel.add(scrollPane);
         ingredientsPanel.validate();
 
-
     }
 
-    class OWLClassListCellRenderer implements ListCellRenderer {
 
-        protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
-
-        public Component getListCellRendererComponent(JList list, Object value, int index,
-                boolean isSelected, boolean cellHasFocus) {
-
-            JLabel rendererLabel = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index,
-                    isSelected, cellHasFocus);
-
-            String str = value.toString().substring(1, value.toString().length() - 1);
-            IRI classIRI = IRI.create(str);
-            OWLClass cls = Global.myOntology.getDf().getOWLClass(classIRI);
-            rendererLabel.setText(Global.myOntology.getOWLClassAlternativeLanguage(cls, QueryInterface.selectedLanguage));
-
-            return rendererLabel;
-        }
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -201,9 +170,10 @@ public class FacetedSearchPanel extends javax.swing.JPanel {
     public static javax.swing.JPanel characteristicsPanel;
     public static javax.swing.JList ingredientsList;
     private javax.swing.JPanel ingredientsPanel;
-    public javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }
+    
 
 class CheckListRenderer extends JCheckBox implements ListCellRenderer {
 

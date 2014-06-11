@@ -139,8 +139,7 @@ public class Configurations {
         try {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            // Attempt to load from file - if this doesn't
-            // work, load the embedded file.
+        
             File file = new File(fileName);
             if(file.exists()) {
                 return documentBuilder.parse(file);
@@ -314,7 +313,7 @@ public class Configurations {
 
     }
       
-   public String getIngredientsCharacteristicName(OWLClass cls) {
+   /*public String getIngredientsCharacteristicName(OWLClass cls) {
         String name = null;
         Element element = (Element) doc.getDocumentElement().getElementsByTagName("ingredientsCharacteristics").item(0);
         NodeList nl = element.getChildNodes();
@@ -332,8 +331,8 @@ public class Configurations {
 
         return name;
     }
-   
-   public OWLClass getIngredientsCharacteristicOWLClass(String name) {
+   */
+   /*public OWLClass getIngredientsCharacteristicOWLClass(String name) {
         IRI classIRI = null;
         OWLClass cls=null;
         Element element = (Element) doc.getDocumentElement().getElementsByTagName("ingredientsCharacteristics").item(0);
@@ -353,6 +352,8 @@ public class Configurations {
 
         return cls;
     }
+    */
+      
     //--------------------------------------------------
     //This function returns the element with attName=attValue
     //To be used in returning query template based on its ID

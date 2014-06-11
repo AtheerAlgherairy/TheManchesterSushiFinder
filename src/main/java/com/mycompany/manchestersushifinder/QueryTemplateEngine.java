@@ -222,6 +222,14 @@ public class QueryTemplateEngine {
             
             return onlySatisfiableClasses(reasoner.getSubClasses(resultExpr, false));
     }
+    //For Direct Search view
+    public Collection getAllIngredients()
+    {
+          
+            OWLClassExpression resultExpr = df.getOWLClass(Global.myConfig.getIngredientClass());
+            return onlySatisfiableClasses(reasoner.getSubClasses(resultExpr, false));
+    }
+    
     //-------------------------------------------------
     
 
