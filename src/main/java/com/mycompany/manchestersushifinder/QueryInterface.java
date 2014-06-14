@@ -86,14 +86,14 @@ public class QueryInterface extends javax.swing.JFrame {
                         //re-render the two lists in the query interface with the selected language
                         jList1.setCellRenderer(new OWLClassListCellRenderer(selectedLanguage));
                         jList2.setCellRenderer(new OWLClassListCellRenderer(selectedLanguage));
-                        
+
                         //re-render the two lists in the faceted search panel with the selected language
                         FacetedSearchPanel.ingredientsList.setCellRenderer(new OWLClassListCellRenderer(selectedLanguage));
                         FacetedSearchPanel.CharacteristicsList.setCellRenderer(new CheckListRenderer());
-                       
+
                         //re-render the list in the direct search panel with the selected language
                         DirectSearchPanel.componentsList.setCellRenderer(new OWLClassListCellRenderer(selectedLanguage));
-           
+
                         //re-render the tree with the selected language
                         DefaultTreeCellRenderer renderer = new OWLClassTreeCellRenderer(selectedLanguage);
                         java.net.URL imgURL1 = QueryInterface.class.getResource("/icon1.png");
@@ -180,9 +180,12 @@ public class QueryInterface extends javax.swing.JFrame {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_DELETE) {
                     if (!IncludedList.isEmpty()) {
-                        IncludedList.remove(jList1.getSelectedIndex());
-                        jList1.revalidate();
-                        jList1.repaint();
+
+                        if (jList1.getSelectedIndex() != -1) {
+                            IncludedList.remove(jList1.getSelectedIndex());
+                            jList1.revalidate();
+                            jList1.repaint();
+                        }
                     }
                 }
             }
@@ -211,9 +214,11 @@ public class QueryInterface extends javax.swing.JFrame {
 
                     if (!ExcludedList.isEmpty()) {
 
-                        ExcludedList.remove(jList2.getSelectedIndex());
-                        jList2.revalidate();
-                        jList2.repaint();
+                        if (jList2.getSelectedIndex() != -1) {
+                            ExcludedList.remove(jList2.getSelectedIndex());
+                            jList2.revalidate();
+                            jList2.repaint();
+                        }
                     }
                 }
             }
@@ -280,9 +285,11 @@ public class QueryInterface extends javax.swing.JFrame {
         SelectedThingsPanel = new javax.swing.JPanel();
         IncludedPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
+        includedRemoveKey = new javax.swing.JButton();
         ExcludedPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jList2 = new javax.swing.JList();
+        excludedRemoveKey = new javax.swing.JButton();
         FooterPanel = new javax.swing.JPanel();
         RadioButtonsPanel = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
@@ -347,13 +354,22 @@ public class QueryInterface extends javax.swing.JFrame {
         jList1.setVerifyInputWhenFocusTarget(false);
         jScrollPane1.setViewportView(jList1);
 
+        includedRemoveKey.setText("Rem");
+        includedRemoveKey.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                includedRemoveKeyActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout IncludedPanelLayout = new javax.swing.GroupLayout(IncludedPanel);
         IncludedPanel.setLayout(IncludedPanelLayout);
         IncludedPanelLayout.setHorizontalGroup(
             IncludedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(IncludedPanelLayout.createSequentialGroup()
                 .addGap(32, 32, 32)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 444, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(IncludedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(includedRemoveKey)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 444, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(251, Short.MAX_VALUE))
         );
         IncludedPanelLayout.setVerticalGroup(
@@ -361,7 +377,9 @@ public class QueryInterface extends javax.swing.JFrame {
             .addGroup(IncludedPanelLayout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(76, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(includedRemoveKey)
+                .addContainerGap(42, Short.MAX_VALUE))
         );
 
         SelectedThingsPanel.add(IncludedPanel);
@@ -378,13 +396,22 @@ public class QueryInterface extends javax.swing.JFrame {
         jList2.setSelectionForeground(new java.awt.Color(0, 0, 0));
         jScrollPane2.setViewportView(jList2);
 
+        excludedRemoveKey.setText("Rem");
+        excludedRemoveKey.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                excludedRemoveKeyActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout ExcludedPanelLayout = new javax.swing.GroupLayout(ExcludedPanel);
         ExcludedPanel.setLayout(ExcludedPanelLayout);
         ExcludedPanelLayout.setHorizontalGroup(
             ExcludedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ExcludedPanelLayout.createSequentialGroup()
                 .addGap(32, 32, 32)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 444, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(ExcludedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(excludedRemoveKey)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 444, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(251, Short.MAX_VALUE))
         );
         ExcludedPanelLayout.setVerticalGroup(
@@ -392,7 +419,9 @@ public class QueryInterface extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ExcludedPanelLayout.createSequentialGroup()
                 .addContainerGap(42, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(44, 44, 44))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(excludedRemoveKey)
+                .addGap(10, 10, 10))
         );
 
         SelectedThingsPanel.add(ExcludedPanel);
@@ -594,6 +623,30 @@ public class QueryInterface extends javax.swing.JFrame {
         selectDoalog.setVisible(true);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
+    private void includedRemoveKeyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_includedRemoveKeyActionPerformed
+
+        if (!IncludedList.isEmpty()) {
+
+            if (jList1.getSelectedIndex() != -1) {
+                IncludedList.remove(jList1.getSelectedIndex());
+                jList1.revalidate();
+                jList1.repaint();
+            }
+        }
+    }//GEN-LAST:event_includedRemoveKeyActionPerformed
+
+    private void excludedRemoveKeyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_excludedRemoveKeyActionPerformed
+
+        if (!ExcludedList.isEmpty()) {
+
+            if (jList2.getSelectedIndex() != -1) {
+                ExcludedList.remove(jList2.getSelectedIndex());
+                jList2.revalidate();
+                jList2.repaint();
+            }
+        }
+    }//GEN-LAST:event_excludedRemoveKeyActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -637,6 +690,8 @@ public class QueryInterface extends javax.swing.JFrame {
     public javax.swing.JPanel RadioButtonsPanel;
     private javax.swing.JPanel SelectedThingsPanel;
     public java.awt.Label TitleLabel;
+    private javax.swing.JButton excludedRemoveKey;
+    private javax.swing.JButton includedRemoveKey;
     private javax.swing.JButton jButton1;
     public final javax.swing.JList jList1 = new javax.swing.JList();
     private javax.swing.JList jList2;
