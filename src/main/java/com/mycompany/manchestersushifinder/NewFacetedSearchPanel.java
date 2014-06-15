@@ -4,6 +4,7 @@
  */
 package com.mycompany.manchestersushifinder;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -26,8 +27,6 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 
-
-
 /**
  *
  * @author Atheer
@@ -38,178 +37,193 @@ public class NewFacetedSearchPanel extends javax.swing.JPanel {
     private Set<OWLClassExpression> selectedClasses = new TreeSet<OWLClassExpression>();
     private String lang;
     private ArrayList<OWLObjectProperty> factesProperties;
-    ArrayList<Data> facets=new ArrayList<Data> ();
-    //JPanel dynamicPanel = new JPanel();
+    ArrayList<Data> facets = new ArrayList<Data>();
+  
     QueryTemplateEngine myEngine;
+     JScrollPane ScrollArea= new JScrollPane(facetsPanel);
+ 
 
+    public NewFacetedSearchPanel(String lang, OntologyClass myOntologyClass, ArrayList<OWLObjectProperty> factesProperties) {
 
     
-    public NewFacetedSearchPanel(String lang, OntologyClass myOntologyClass, ArrayList<OWLObjectProperty> factesProperties) {
-           
-        myEngine= new QueryTemplateEngine(myOntologyClass.getDf(), myOntologyClass.getOntologyIRI(), myOntologyClass.getReasoner());
+        
+        myEngine = new QueryTemplateEngine(myOntologyClass.getDf(), myOntologyClass.getOntologyIRI(), myOntologyClass.getReasoner());
         initComponents();
         this.lang = lang;
         this.myOntologyClass = myOntologyClass;
         this.factesProperties = factesProperties;
         fillFactesProperties();
         addFactesCheckboxes();
-       buildList();
+        buildList();
+        
+      
     }
 
     private void fillFactesProperties() {
         if (!factesProperties.isEmpty()) {
-            for(int i=0;i<factesProperties.size();i++)
-            {
-               // OWLClassExpression firstExpr = null;
-                if (!factesProperties.get(i).getRanges(myOntologyClass.getOntology()).isEmpty())
-                {
-                    OWLObjectProperty p=factesProperties.get(i);
-                   Set<OWLClassExpression> expressions=p.getRanges(myOntologyClass.getOntology());
-                   OWLClassExpression resultExpr = myOntologyClass.getDf().getOWLObjectIntersectionOf(expressions);
-                   
-                  // Object[] expressionsArray= expressions.toArray();
-                   
+            for (int i = 0; i < factesProperties.size(); i++) {
+                // OWLClassExpression firstExpr = null;
+                if (!factesProperties.get(i).getRanges(myOntologyClass.getOntology()).isEmpty()) {
+                    OWLObjectProperty p = factesProperties.get(i);
+                    Set<OWLClassExpression> expressions = p.getRanges(myOntologyClass.getOntology());
+                    OWLClassExpression resultExpr = myOntologyClass.getDf().getOWLObjectIntersectionOf(expressions);
+
+                    // Object[] expressionsArray= expressions.toArray();
+
                     //firstExpr= (OWLClassExpression) expressionsArray[0];
-                    
-                   // Data f=new Data (p,(OWLClass) firstExpr);
-                    Data f=new Data (p,resultExpr);
-                 // Object[] subClassesArr=myEngine.onlySatisfiableClasses(myOntologyClass.getReasoner().getSubClasses(firstExpr, false)).toArray();
-                   Object[] subClassesArr=myEngine.onlySatisfiableClasses(myOntologyClass.getReasoner().getSubClasses(resultExpr, false)).toArray();
-                    ArrayList<OWLClass> a=new ArrayList<OWLClass>();
-                    
-                    for(int k=0;k<subClassesArr.length;k++)
+
+                    // Data f=new Data (p,(OWLClass) firstExpr);
+                    Data f = new Data(p, resultExpr);
+                    // Object[] subClassesArr=myEngine.onlySatisfiableClasses(myOntologyClass.getReasoner().getSubClasses(firstExpr, false)).toArray();
+                    Object[] subClassesArr = myEngine.onlySatisfiableClasses(myOntologyClass.getReasoner().getSubClasses(resultExpr, false)).toArray();
+                    ArrayList<OWLClass> a = new ArrayList<OWLClass>();
+
+                    for (int k = 0; k < subClassesArr.length; k++) {
                         a.add((OWLClass) subClassesArr[k]);
-                    
+                    }
+
                     f.setSubClasses(a);
                     f.setnumOfSubClasses(a.size());
                     facets.add(f);
-                   
+
                 }
-          
+
             }
-            
+
         }
 
     }
 
-   public void addFactesCheckboxes() {
+    public void addFactesCheckboxes() {
 
-       facetsPanel.removeAll();
-       facetsPanel.repaint();
-       selectedClasses.removeAll(selectedClasses);
-       buildList();
-        
-        int numOfFactes=facets.size();   
-        int numOfAllRows=0;
-      
-        for(int i=0;i<facets.size();i++)
-            numOfAllRows=numOfAllRows+facets.get(i).getNumOfSubClasses();
-        
-        
-        numOfAllRows=numOfAllRows+numOfFactes; //num of subclasses + facets
-        Component[] facetsList=new Component[numOfAllRows];
-        
-        JPanel p=new JPanel();
-        JScrollPane scrollPane= new JScrollPane();
-        scrollPane.removeAll();
-        scrollPane.setPreferredSize(new Dimension(190,100));
-        int count=0;
-
-    
-        for (int i = 0; i < numOfFactes; i++) {
-          
-           JLabel facetLabel=new JLabel(facets.get(i).getPropertyName());
-           facetsList[count]=facetLabel;
        
-           facetsPanel.add(facetLabel);
-            count++;
-          
-            for(int k=0;k<facets.get(i).getsubClassesNames().size();k++)
-            {
-                if(count<numOfAllRows)
-                {
-                JCheckBox cb=new JCheckBox( facets.get(i).getsubClassesNames().get(k).toString());
-               cb.setName(facets.get(i).getsubClasses().get(k).toString()+facets.get(i).getProperty());
-               cb.addActionListener(new ActionListener() {
+        
+         facetsPanel.removeAll();
+        facetsPanel.repaint();
+        selectedClasses.removeAll(selectedClasses);
+      
+        
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              
-               AbstractButton abstractButton = (AbstractButton) e.getSource();
-              boolean selected = abstractButton.getModel().isSelected();
-              
-             String str1 = abstractButton.getName().substring(1, abstractButton.getName().indexOf(">"));
-             String str2 = abstractButton.getName().substring(abstractButton.getName().indexOf(">")+2, abstractButton.getName().lastIndexOf(">"));
-             IRI classIRI = IRI.create(str1);
-              OWLClass c = myOntologyClass.getDf().getOWLClass(classIRI);
-              
-              IRI propertyIRI = IRI.create(str2);
-              OWLObjectProperty p =myOntologyClass.getDf().getOWLObjectProperty(propertyIRI);
-              
-              if(selected)
-              {
-                  Set<OWLClassExpression> classes = new HashSet<OWLClassExpression>();
-                  //Ingredients
-                 // classes.add(myOntologyClass.getDf().getOWLClass(Global.myConfig.getIngredientClass()));
-                  // Create the existential restrictions of things that we want to include.
-                  classes.add(myOntologyClass.getDf().getOWLObjectSomeValuesFrom(p, c));
-                  //intersection of all previous
-                  OWLClassExpression resultExpr = myOntologyClass.getDf().getOWLObjectIntersectionOf(classes);
-                  selectedClasses.add(resultExpr);
+        
+       
+        buildList();
 
-                   buildList();
-                  
-              }
-              else
-              {
-                 Set<OWLClassExpression> classes = new HashSet<OWLClassExpression>();
-                  // Create the existential restrictions of things that we want to include.
-                  classes.add(myOntologyClass.getDf().getOWLObjectSomeValuesFrom(p, c));
-                  //intersection of all previous
-                  OWLClassExpression resultExpr = myOntologyClass.getDf().getOWLObjectIntersectionOf(classes);
-                  selectedClasses.remove(resultExpr);
+        int numOfFactes = facets.size();
+        int numOfAllRows = 0;
 
-                   buildList();
-              }
-
-         
-            }
-         });
-
-               facetsList[count]= cb;
-               facetsPanel.add(cb);
-               
-            
-                count++;
-                
-                }
-                else
-                {
-                 
-                JCheckBox cb=new JCheckBox( facets.get(i).getsubClassesNames().get(k).toString());
-               
-               facetsList[count]= cb;
-             facetsPanel.add(cb);
-             
-                }
-                    
-            }
-           
+        for (int i = 0; i < facets.size(); i++) {
+            numOfAllRows = numOfAllRows + facets.get(i).getNumOfSubClasses();
         }
+
+
+        numOfAllRows = numOfAllRows + numOfFactes; //num of subclasses + facets
+        Component[] facetsList = new Component[numOfAllRows];
+
+
       
-        
+        int count = 0;
+
+
+        for (int i = 0; i < numOfFactes; i++) {
+
+            JLabel facetLabel = new JLabel(facets.get(i).getPropertyName());
+            facetsList[count] = facetLabel;
+
+            facetsPanel.add(facetLabel);
+            count++;
+
+            for (int k = 0; k < facets.get(i).getsubClassesNames().size(); k++) {
+                if (count < numOfAllRows) {
+                    JCheckBox cb = new JCheckBox(facets.get(i).getsubClassesNames().get(k).toString());
+                    cb.setName(facets.get(i).getsubClasses().get(k).toString() + facets.get(i).getProperty());
+                    cb.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+
+                            AbstractButton abstractButton = (AbstractButton) e.getSource();
+                            boolean selected = abstractButton.getModel().isSelected();
+
+                            String str1 = abstractButton.getName().substring(1, abstractButton.getName().indexOf(">"));
+                            String str2 = abstractButton.getName().substring(abstractButton.getName().indexOf(">") + 2, abstractButton.getName().lastIndexOf(">"));
+                            IRI classIRI = IRI.create(str1);
+                            OWLClass c = myOntologyClass.getDf().getOWLClass(classIRI);
+
+                            IRI propertyIRI = IRI.create(str2);
+                            OWLObjectProperty p = myOntologyClass.getDf().getOWLObjectProperty(propertyIRI);
+
+                            if (selected) {
+                                Set<OWLClassExpression> classes = new HashSet<OWLClassExpression>();
+                                //Ingredients
+                                // classes.add(myOntologyClass.getDf().getOWLClass(Global.myConfig.getIngredientClass()));
+                                // Create the existential restrictions of things that we want to include.
+                                classes.add(myOntologyClass.getDf().getOWLObjectSomeValuesFrom(p, c));
+                                //intersection of all previous
+                                OWLClassExpression resultExpr = myOntologyClass.getDf().getOWLObjectIntersectionOf(classes);
+                                selectedClasses.add(resultExpr);
+
+                                buildList();
+
+                            } else {
+                                Set<OWLClassExpression> classes = new HashSet<OWLClassExpression>();
+                                // Create the existential restrictions of things that we want to include.
+                                classes.add(myOntologyClass.getDf().getOWLObjectSomeValuesFrom(p, c));
+                                //intersection of all previous
+                                OWLClassExpression resultExpr = myOntologyClass.getDf().getOWLObjectIntersectionOf(classes);
+                                selectedClasses.remove(resultExpr);
+
+                                buildList();
+                            }
+
+
+                        }
+                    });
+
+                    facetsList[count] = cb;
+                    facetsPanel.add(cb);
+
+
+                    count++;
+
+                } else {
+
+                    JCheckBox cb = new JCheckBox(facets.get(i).getsubClassesNames().get(k).toString());
+
+                    facetsList[count] = cb;
+                    facetsPanel.add(cb);
+
+                }
+
+            }
+
+        }
+
+
+
+        /* for(int i=0;i<facetsList.length;i++)
+         {
+         characteristicsPanel.add(facetsList[i]);
+         }*/
+  ScrollArea.setViewportView(facetsPanel);
+            ScrollArea.validate();
+        ScrollArea.repaint();
+         // ScrollArea= new JScrollPane(facetsPanel);
+         ScrollArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+         ScrollArea.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        ScrollArea.setMaximumSize(new Dimension(190, 200));
+        ScrollArea.setPreferredSize(new Dimension(190, 200));
+        ScrollArea.setSize(new Dimension(190, 200));
        
-       /* for(int i=0;i<facetsList.length;i++)
-        {
-            characteristicsPanel.add(facetsList[i]);
-        }*/
-        
+    
+      
+    
+    
         facetsPanel.validate();
-   
+
+        this.add(ScrollArea, BorderLayout.NORTH);
     }
 
     private void buildList() {
-      
+
         DefaultListModel ingredientsListModel = new DefaultListModel();
         QueryTemplateEngine myEngine = new QueryTemplateEngine(myOntologyClass.getDf(), myOntologyClass.getOntologyIRI(), myOntologyClass.getReasoner());
         Collection resultCollection = myEngine.getIngredientsWithCharacteristics(selectedClasses);
@@ -228,8 +242,6 @@ public class NewFacetedSearchPanel extends javax.swing.JPanel {
         ingredientsPanel.validate();
 
     }
-
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -283,17 +295,18 @@ public class NewFacetedSearchPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 }
 
- class Data{
+class Data {
+
     private OWLClassExpression rangeClass;
     private Integer numOfSubClasses;
     private ArrayList<OWLClass> subClasses;
     private OWLObjectProperty property;
 
-   Data(OWLObjectProperty property, OWLClassExpression rangeClass)
-    {
-        this.rangeClass=rangeClass;
-        this.property=property;
+    Data(OWLObjectProperty property, OWLClassExpression rangeClass) {
+        this.rangeClass = rangeClass;
+        this.property = property;
     }
+
     public void setProperty(OWLObjectProperty property) {
         this.property = property;
     }
@@ -301,40 +314,37 @@ public class NewFacetedSearchPanel extends javax.swing.JPanel {
     public OWLObjectProperty getProperty() {
         return property;
     }
-    
+
     public OWLClassExpression getRangeClass() {
         return rangeClass;
     }
-    
-    public String getRangeClassName()
-    {
-       return Global.myOntology.getOWLClassAlternativeLanguage((OWLClass) rangeClass, QueryInterface.selectedLanguage); 
+
+    public String getRangeClassName() {
+        return Global.myOntology.getOWLClassAlternativeLanguage((OWLClass) rangeClass, QueryInterface.selectedLanguage);
     }
-    
-        public String getPropertyName()
-    {
-       return Global.myOntology.getOWLObjectPropertyAlternativeLanguage(property, QueryInterface.selectedLanguage); 
+
+    public String getPropertyName() {
+        return Global.myOntology.getOWLObjectPropertyAlternativeLanguage(property, QueryInterface.selectedLanguage);
     }
-    
-    public  ArrayList<OWLClass> getsubClasses()
-    {
+
+    public ArrayList<OWLClass> getsubClasses() {
         return subClasses;
     }
 
-    public  ArrayList<String> getsubClassesNames()
-    {
-         ArrayList<String> subClassesNames=new ArrayList<String>();
-         
-         for(int i=0;i<subClasses.size();i++)
-             subClassesNames.add(Global.myOntology.getOWLClassAlternativeLanguage(subClasses.get(i), QueryInterface.selectedLanguage));
-       
-         return subClassesNames;
+    public ArrayList<String> getsubClassesNames() {
+        ArrayList<String> subClassesNames = new ArrayList<String>();
+
+        for (int i = 0; i < subClasses.size(); i++) {
+            subClassesNames.add(Global.myOntology.getOWLClassAlternativeLanguage(subClasses.get(i), QueryInterface.selectedLanguage));
+        }
+
+        return subClassesNames;
     }
-    
-    public void setSubClasses(ArrayList<OWLClass> subClasses)
-    {
-       this.subClasses=subClasses;
+
+    public void setSubClasses(ArrayList<OWLClass> subClasses) {
+        this.subClasses = subClasses;
     }
+
     public void setOWLClass(OWLClass cls) {
         this.rangeClass = cls;
     }
@@ -347,4 +357,3 @@ public class NewFacetedSearchPanel extends javax.swing.JPanel {
         this.numOfSubClasses = numOfSubClasses;
     }
 }
-

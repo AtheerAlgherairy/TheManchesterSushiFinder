@@ -31,6 +31,7 @@
    <IngredientsFacets>
        <Facet property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasSpiciness"/>
        <Facet property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasSweetness"/>
+      
    </IngredientsFacets>
    
    
