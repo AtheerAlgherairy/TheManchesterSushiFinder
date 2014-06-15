@@ -18,6 +18,7 @@ import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLLiteral;
+import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
@@ -138,7 +139,72 @@ public class OntologyClass {
         }
     }
 
+    public String getOWLObjectPropertyAlternativeLanguage(OWLObjectProperty property, String selectedLang)
+    {
+        Boolean flag = false;
+        OWLLiteral val = null;
+        String renderedName=null;
+        String langName=null;
         
+        //If there is a label with the selected language.. return it
+        
+        for (OWLAnnotation ann : property.getAnnotations(ontology, dataFactory.getRDFSLabel())) {
+            val = (OWLLiteral) ann.getValue();
+            if (val.hasLang(selectedLang)) {
+                 flag = true;
+                 langName=val.getLiteral();
+                 break;  
+            }
+         
+        }
+        
+        if(langName!=null)
+        {
+            flag = false;
+            return langName;
+        }
+        
+      
+        //Prepare the short form provider and no camel case:
+        String shortForm=shortFormProvider.getShortForm(property); 
+        String name= stringWithNoCamelCase(shortForm); 
+            
+        // if there is no label with the selected language.. Based on the information in the config.xml
+        if (!flag) 
+        {
+             //Check if the priority is to use *label* with no language       
+           if (Global.myConfig.getClassRenderingUse().equalsIgnoreCase("label"))
+           {
+               renderedName=null;
+               OWLLiteral value = null; 
+               
+               
+                for (OWLAnnotation ann : property.getAnnotations(ontology, dataFactory.getRDFSLabel()))
+                {             
+                             value = (OWLLiteral) ann.getValue();
+                             if(value.getLang().isEmpty())
+                             {
+                             renderedName=value.getLiteral();
+                             break; 
+                             }
+                }
+               
+              if( renderedName != null)
+                  return renderedName;    
+           }
+        
+           //Or if the priority is to use IRI and short form provider.  
+           if( Global.myConfig.getClassRenderingUse().equalsIgnoreCase("IRI"))
+           {
+            return name;
+           }
+ 
+        } 
+        
+        //At the end if there is no labels at all, the IRI and short form provider will be used
+           return name;
+    }
+    
     public String getOWLClassAlternativeLanguage(OWLClass cl, String selectedLang) {
         Boolean flag = false;
         OWLLiteral val = null;

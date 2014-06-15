@@ -94,6 +94,13 @@ public class QueryInterface extends javax.swing.JFrame {
                         //re-render the list in the direct search panel with the selected language
                         DirectSearchPanel.componentsList.setCellRenderer(new OWLClassListCellRenderer(selectedLanguage));
 
+                        
+                        //re-render the new faceted search:
+                        StartFrame.fourthView.addFactesCheckboxes();
+                        //************************************************
+                        
+                        
+                        
                         //re-render the tree with the selected language
                         DefaultTreeCellRenderer renderer = new OWLClassTreeCellRenderer(selectedLanguage);
                         java.net.URL imgURL1 = QueryInterface.class.getResource("/icon1.png");

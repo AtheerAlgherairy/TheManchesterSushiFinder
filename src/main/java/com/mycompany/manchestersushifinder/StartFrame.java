@@ -38,6 +38,7 @@ public class StartFrame extends javax.swing.JFrame {
     public static QueryInterface qframe;
     public static FacetedSearchPanel secondView;
     public static DirectSearchPanel thirdView;
+    public static NewFacetedSearchPanel fourthView;
     
     Timer timer = new Timer(600, new ActionListener() {
         private String text = "Please wait for loading ...";
@@ -168,6 +169,8 @@ public class StartFrame extends javax.swing.JFrame {
             myOntologyClass = Global.myOntology;
         }
             secondView = new FacetedSearchPanel("default", myOntologyClass, Global.myConfig.getIngredientsCharacteristics());
+            
+             fourthView = new NewFacetedSearchPanel("default", myOntologyClass, Global.myConfig.getIngredientsFactes());
         //------------Creating Third View: DirectSearchPanel--------------
             thirdView=new DirectSearchPanel(myOntologyClass);
             
@@ -180,6 +183,8 @@ public class StartFrame extends javax.swing.JFrame {
         tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
         tabbedPane.addTab("Search",thirdView);
         tabbedPane.setMnemonicAt(2, KeyEvent.VK_3);
+        tabbedPane.addTab("New",fourthView);
+        tabbedPane.setMnemonicAt(3, KeyEvent.VK_4);
         qframe.BrowsingPanel.add(tabbedPane);
         qframe.BrowsingPanel.validate();
 

@@ -110,7 +110,7 @@ public class QueryTemplateEngine {
         return result;
     }
     
-    private Set<OWLClass> onlySatisfiableClasses(NodeSet<OWLClass> set) {
+    public Set<OWLClass> onlySatisfiableClasses(NodeSet<OWLClass> set) {
         Set<OWLClass> result = new TreeSet<OWLClass>();
         for (OWLClass cls : set.getFlattened()) {
             if (reasoner.isSatisfiable(cls)) {
@@ -214,7 +214,7 @@ public class QueryTemplateEngine {
     }
     
     //For Faceted Search (view)
-    public Collection getIngredientsWithCharacteristics(Set<OWLClass> classes)
+    public Collection getIngredientsWithCharacteristics(Set<OWLClassExpression> classes)
     {
             classes.add(df.getOWLClass(Global.myConfig.getIngredientClass()));
             OWLClassExpression resultExpr = df.getOWLObjectIntersectionOf(classes);

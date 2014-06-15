@@ -17,6 +17,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -313,47 +314,26 @@ public class Configurations {
 
     }
       
-   /*public String getIngredientsCharacteristicName(OWLClass cls) {
-        String name = null;
-        Element element = (Element) doc.getDocumentElement().getElementsByTagName("ingredientsCharacteristics").item(0);
-        NodeList nl = element.getChildNodes();
-        for (int i = 0; i < nl.getLength(); i++) {
-            Node n = nl.item(i);
-            if (n instanceof Element) {
-                Element el = (Element) n;
-                String strClassIRI=cls.getIRI().toString();
-                if (el.getAttribute("class").toString().equals(strClassIRI)) {
-                 
-                    name = el.getAttribute("name").toString();
-                }
-            }
-        }//end for
+  public ArrayList<OWLObjectProperty> getIngredientsFactes() {
 
-        return name;
-    }
-   */
-   /*public OWLClass getIngredientsCharacteristicOWLClass(String name) {
-        IRI classIRI = null;
-        OWLClass cls=null;
-        Element element = (Element) doc.getDocumentElement().getElementsByTagName("ingredientsCharacteristics").item(0);
-        NodeList nl = element.getChildNodes();
-        for (int i = 0; i < nl.getLength(); i++) {
-            Node n = nl.item(i);
-            if (n instanceof Element) {
-                Element el = (Element) n;
-                if (el.getAttribute("name").toString().equals(name)) {
-                 
-                    classIRI = IRI.create(el.getAttribute("class").toString());
-                    cls = Global.myOntology.getDf().getOWLClass(classIRI);
-                  
+        ArrayList<OWLObjectProperty> properties = new ArrayList<OWLObjectProperty>();
+        IRI propertyIRI = null;
+        Element element = (Element) doc.getDocumentElement().getElementsByTagName("IngredientsFacets").item(0);
+        if (element != null) {
+            NodeList nl = element.getChildNodes();
+            for (int i = 0; i < nl.getLength(); i++) {
+                Node n = nl.item(i);
+                if (n instanceof Element) {
+                    Element el = (Element) n;
+                    propertyIRI = IRI.create(el.getAttribute("property").toString());
+                    OWLObjectProperty p = Global.myOntology.getDf().getOWLObjectProperty(propertyIRI);
+                    properties.add(p);
                 }
-            }
-        }//end for
+            }//end for
+        }
+        return properties;
 
-        return cls;
     }
-    */
-      
     //--------------------------------------------------
     //This function returns the element with attName=attValue
     //To be used in returning query template based on its ID

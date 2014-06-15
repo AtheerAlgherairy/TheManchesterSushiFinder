@@ -21,6 +21,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLClassExpression;
 
 /**
  *
@@ -29,7 +30,7 @@ import org.semanticweb.owlapi.model.OWLClass;
 public class FacetedSearchPanel extends javax.swing.JPanel {
 
     private OntologyClass myOntologyClass;
-    private Set<OWLClass> selectedClasses = new TreeSet<OWLClass>();
+    private Set<OWLClassExpression> selectedClasses = new TreeSet<OWLClassExpression>();
     private String lang;
     private ArrayList<OWLClass> ingredientsCharacteristics;
     public static JList CharacteristicsList;
@@ -173,7 +174,7 @@ public class FacetedSearchPanel extends javax.swing.JPanel {
 }
     
 
-class CheckListRenderer extends JCheckBox implements ListCellRenderer {
+ class CheckListRenderer extends JCheckBox implements ListCellRenderer {
 
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean hasFocus) {
         setEnabled(list.isEnabled());

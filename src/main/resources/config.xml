@@ -28,6 +28,12 @@
         <ingredientsCharacteristic class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SeaFood" /> 
    </ingredientsCharacteristics>
    
+   <IngredientsFacets>
+       <Facet property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasSpiciness"/>
+       <Facet property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasSweetness"/>
+   </IngredientsFacets>
+   
+   
     <ResultsAnnotationProperty name="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#description"/>
     <!-- http://www.w3.org/2000/01/rdf-schema#comment -->
     <ResultsCharacteristics>
@@ -36,9 +42,7 @@
         <ResultsCharacteristic  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#VegetarianSushi" url="/vegIcon.jpg" />  
         <ResultsCharacteristic  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SpicyPlatter" url="/spicyIcon.jpg" />
         <ResultsCharacteristic  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#VegetarianPlatter" url="/vegIcon.jpg" />
-        <ResultsCharacteristic  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#LowCaloriesPlatter" url="/lowCalIcon.jpg" />
-        
-        
+        <ResultsCharacteristic  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#LowCaloriesPlatter" url="/lowCalIcon.jpg" />   
     </ResultsCharacteristics> 
     
     
