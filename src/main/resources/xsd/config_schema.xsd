@@ -65,10 +65,10 @@
                     </xs:complexType>
                 </xs:element>    
                 
-                   <xs:element name="ingredientsCharacteristics" maxOccurs="1" minOccurs="0">
+                   <xs:element name="IngredientsClassifications" maxOccurs="1" minOccurs="0">
                     <xs:complexType>
                         <xs:sequence maxOccurs="unbounded" minOccurs="0">
-                            <xs:element name="ingredientsCharacteristic">
+                            <xs:element name="Classification">
                                 <xs:complexType>
                                     <xs:attribute name="class" type="xs:string" use="required"/>
                                 </xs:complexType>

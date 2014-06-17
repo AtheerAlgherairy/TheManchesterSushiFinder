@@ -7,8 +7,10 @@ package com.mycompany.manchestersushifinder;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import javax.swing.DefaultListModel;
 import javax.swing.ListCellRenderer;
@@ -47,7 +49,7 @@ public class DirectSearchPanel extends javax.swing.JPanel {
                     filterList();
                 }
             }
-     
+
             public void keyPressed(KeyEvent e) {
                 searchFieldLength = searchField.getText().length();
             }
@@ -168,7 +170,7 @@ public class DirectSearchPanel extends javax.swing.JPanel {
         //the new filtered model;
         filteredModel = new DefaultListModel();
         String prefix = searchField.getText().toLowerCase();
-        
+
         for (int i = 0; i < componentsList.getModel().getSize(); i++) {
 
             //get the element in the model and render it in the selected language
@@ -180,8 +182,8 @@ public class DirectSearchPanel extends javax.swing.JPanel {
             String str1 = itemText.toLowerCase();
 
             //do the matching check.. and take the element Index
-            if (str1.startsWith(prefix)) {
-
+            if (str1.contains(prefix)) {
+                //str1.startsWith(prefix)
                 elemIndex = i;
                 resultSet.add(componentsList.getModel().getElementAt(elemIndex));
             }
@@ -193,6 +195,19 @@ public class DirectSearchPanel extends javax.swing.JPanel {
         while (itr.hasNext()) {
             filteredModel.addElement(itr.next());
         }
+
+
+        //Sort the filteredModel :
+        List<String> mylist = Collections.list(filteredModel.elements());
+        Collections.sort(mylist);
+
+        filteredModel.removeAllElements();
+        for (int i = 0; i < mylist.size(); i++) {
+            filteredModel.addElement(mylist.get(i));
+        }
+
+        //-----------------------------------------
+
         // Setting the componentsList with the new filtered model
         componentsList.setModel(filteredModel);
 

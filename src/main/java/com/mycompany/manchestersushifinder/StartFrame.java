@@ -168,7 +168,7 @@ public class StartFrame extends javax.swing.JFrame {
         } else {
             myOntologyClass = Global.myOntology;
         }
-            secondView = new FacetedSearchPanel("default", myOntologyClass, Global.myConfig.getIngredientsCharacteristics());
+            secondView = new FacetedSearchPanel("default", myOntologyClass, Global.myConfig.getIngredientsClassifications());
             
              fourthView = new NewFacetedSearchPanel("default", myOntologyClass, Global.myConfig.getIngredientsFactes());
         //------------Creating Third View: DirectSearchPanel--------------
@@ -179,11 +179,11 @@ public class StartFrame extends javax.swing.JFrame {
         JTabbedPane tabbedPane = new JTabbedPane();     
         tabbedPane.addTab("Tree",jscrollpane1);
         tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);       
-        tabbedPane.addTab("Faceted",secondView);
+        tabbedPane.addTab("Classes",secondView);
         tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
         tabbedPane.addTab("Search",thirdView);
         tabbedPane.setMnemonicAt(2, KeyEvent.VK_3);
-        tabbedPane.addTab("New",fourthView);
+        tabbedPane.addTab("facets",fourthView);
         tabbedPane.setMnemonicAt(3, KeyEvent.VK_4);
         qframe.BrowsingPanel.add(tabbedPane);
         qframe.BrowsingPanel.validate();

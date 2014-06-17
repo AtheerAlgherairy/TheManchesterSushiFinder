@@ -20,17 +20,18 @@
     
 <ClassRendering use="label"/> <!--label Or IRI  -->
    
-   <ingredientsCharacteristics>
-        <ingredientsCharacteristic class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#VegetarianIngredient" />
-        <ingredientsCharacteristic class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SpicyIngredient" />
-        <ingredientsCharacteristic class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SweetIngredient" />  
-        <ingredientsCharacteristic  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#Meat" /> 
-        <ingredientsCharacteristic class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SeaFood" /> 
-   </ingredientsCharacteristics>
+   <ingredientsClassifications>
+        <Classification class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#VegetarianIngredient" />
+        <Classification class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SpicyIngredient" /> 
+        <Classification  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#Meat" /> 
+        <Classification class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SeaFood" /> 
+   </ingredientsClassifications>
    
    <IngredientsFacets>
        <Facet property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasSpiciness"/>
        <Facet property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasSweetness"/>
+       <Facet property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasTexture"/>
+       <Facet property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasCost"/>
       
    </IngredientsFacets>
    

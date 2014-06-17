@@ -293,11 +293,11 @@ public class Configurations {
     }
     
     
-      public ArrayList<OWLClass> getIngredientsCharacteristics() {
+      public ArrayList<OWLClass> getIngredientsClassifications() {
 
         ArrayList<OWLClass> cls = new ArrayList<OWLClass>();
         IRI classIRI = null;
-        Element element = (Element) doc.getDocumentElement().getElementsByTagName("ingredientsCharacteristics").item(0);
+        Element element = (Element) doc.getDocumentElement().getElementsByTagName("IngredientsClassifications").item(0);
         if (element != null) {
             NodeList nl = element.getChildNodes();
             for (int i = 0; i < nl.getLength(); i++) {

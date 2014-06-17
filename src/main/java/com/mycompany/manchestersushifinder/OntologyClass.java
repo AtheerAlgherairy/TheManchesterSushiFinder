@@ -233,6 +233,7 @@ public class OntologyClass {
         //Prepare the short form provider and no camel case:
         String shortForm=shortFormProvider.getShortForm(cl); 
         String name= stringWithNoCamelCase(shortForm); 
+  
             
         // if there is no label with the selected language.. Based on the information in the config.xml
         if (!flag) 
@@ -272,14 +273,15 @@ public class OntologyClass {
         
     }
 
-       public String stringWithNoCamelCase(String shortForm) {
+   public String stringWithNoCamelCase(String shortForm) {
+       
         StringBuilder myStringBuilder = new StringBuilder();
         char letter = 0;
         //for each character in the short form string
         for (int i = 0; i < shortForm.length(); i++) {   
             //if the character is an upper case and not the first letter in 
             //the string, add a space then the character.
-            if (letter != 0 && Character.isUpperCase(shortForm.charAt(i))) {
+            if (letter != 0 && Character.isUpperCase(shortForm.charAt(i)) && letter!=' ') {
                 myStringBuilder.append(" ");
             }
             myStringBuilder.append(shortForm.charAt(i));
@@ -287,9 +289,7 @@ public class OntologyClass {
         }
         return myStringBuilder.toString();
     }
-       
 
-    
    public Collection<OWLClass> getIngredients() {
         IRI ingredientClassIRI = null;
         OWLClass ingreidentClass = null;
