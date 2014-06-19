@@ -17,6 +17,8 @@ import java.awt.event.KeyListener;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
@@ -36,7 +38,17 @@ import javax.swing.event.ListDataListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLObjectProperty;
+import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
+import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
+import org.semanticweb.owlapi.util.OWLClassExpressionVisitorAdapter;
+import org.semanticweb.owlapi.util.OWLOntologyWalker;
+import org.semanticweb.owlapi.util.OWLOntologyWalkerVisitor;
 import org.w3c.dom.Element;
 
 /**
@@ -94,13 +106,13 @@ public class QueryInterface extends javax.swing.JFrame {
                         //re-render the list in the direct search panel with the selected language
                         DirectSearchPanel.componentsList.setCellRenderer(new OWLClassListCellRenderer(selectedLanguage));
 
-                        
+
                         //re-render the new faceted search:
                         StartFrame.fourthView.addFactesCheckboxes();
                         //************************************************
-                        
-                        
-                        
+
+
+
                         //re-render the tree with the selected language
                         DefaultTreeCellRenderer renderer = new OWLClassTreeCellRenderer(selectedLanguage);
                         java.net.URL imgURL1 = QueryInterface.class.getResource("/icon1.png");
@@ -144,6 +156,7 @@ public class QueryInterface extends javax.swing.JFrame {
 
             public void intervalAdded(ListDataEvent e) {
                 updateNumberOfResults();
+
             }
 
             public void intervalRemoved(ListDataEvent e) {
@@ -807,4 +820,3 @@ class OWLClassListCellRenderer implements ListCellRenderer {
     }
 }
 //-------
-

@@ -20,12 +20,12 @@
     
 <ClassRendering use="label"/> <!--label Or IRI  -->
    
-   <ingredientsClassifications>
+   <IngredientsClassifications>
         <Classification class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#VegetarianIngredient" />
         <Classification class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SpicyIngredient" /> 
         <Classification  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#Meat" /> 
         <Classification class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SeaFood" /> 
-   </ingredientsClassifications>
+   </IngredientsClassifications>
    
    <IngredientsFacets>
        <Facet property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasSpiciness"/>
