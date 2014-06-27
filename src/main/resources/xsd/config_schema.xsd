@@ -89,6 +89,25 @@
                     </xs:complexType>
                 </xs:element> 
                 
+                
+                                
+         <xs:element name="Sanctions" maxOccurs="1" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence maxOccurs="unbounded" minOccurs="0">
+                            <xs:element name="Sanction">
+                                <xs:complexType>
+                                    
+                                    <xs:attribute name="classC" type="xs:string" use="required"/>
+                                    <xs:attribute name="property" type="xs:string" use="required"/>
+                                    <xs:attribute name="classD" type="xs:string" use="required"/>
+                                   
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element> 
+                
+                
                 <xs:element name="ResultsCharacteristics" maxOccurs="1" minOccurs="1">
                     <xs:complexType>
                         <xs:sequence maxOccurs="unbounded" minOccurs="0">

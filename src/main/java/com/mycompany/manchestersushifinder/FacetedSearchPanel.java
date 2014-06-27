@@ -160,7 +160,7 @@ public class FacetedSearchPanel extends javax.swing.JPanel {
 
         add(ingredientsPanel, java.awt.BorderLayout.CENTER);
 
-        characteristicsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Characterstics:"));
+        characteristicsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Filter:"));
         characteristicsPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         characteristicsPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
         add(characteristicsPanel, java.awt.BorderLayout.PAGE_START);

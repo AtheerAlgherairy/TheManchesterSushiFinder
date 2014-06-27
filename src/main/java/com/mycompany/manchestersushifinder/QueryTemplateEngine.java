@@ -11,6 +11,7 @@ import java.util.TreeSet;
 import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.ListModel;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
@@ -29,15 +30,15 @@ import org.w3c.dom.NodeList;
  */
 public class QueryTemplateEngine {
 
-    DefaultListModel IncludedList;
-    DefaultListModel ExcludedList; 
+    ListModel IncludedList;
+    ListModel ExcludedList; 
     Element tempElement;
     OWLDataFactory df;
     IRI ontologyIRI;
     Boolean satisfiable;
     OWLReasoner reasoner;
 
-    public QueryTemplateEngine(DefaultListModel IncludedList, DefaultListModel ExcludedList, Element tempElement, OWLDataFactory df, IRI ontologyIRI,OWLReasoner reasoner) {
+    public QueryTemplateEngine(ListModel IncludedList, ListModel ExcludedList, Element tempElement, OWLDataFactory df, IRI ontologyIRI,OWLReasoner reasoner) {
         this.IncludedList = IncludedList;
         this.ExcludedList = ExcludedList;
         this.tempElement = tempElement;
@@ -58,8 +59,8 @@ public class QueryTemplateEngine {
     }
 
     public Collection getQueryResults() {
-          Set<OWLClass> includedThings = new TreeSet<OWLClass>();
-          Set<OWLClass> excludedThings = new TreeSet<OWLClass>();
+          Set<OWLClassExpression> includedThings = new TreeSet<OWLClassExpression>();
+          Set<OWLClassExpression> excludedThings = new TreeSet<OWLClassExpression>();
           
         //fill the sets from lists
         fillSets(includedThings,IncludedList);
@@ -122,17 +123,74 @@ public class QueryTemplateEngine {
     
 
        
-    private void fillSets(Set<OWLClass> setOfClasses,DefaultListModel list )
+    private void fillSets(Set<OWLClassExpression> setOfClassExpressions,ListModel list )
     {
             
-        for(int i=0;i<list.size();i++)
+        for(int i=0;i<list.getSize();i++)
         {
-            String str=list.get(i).toString().substring(1, list.get(i).toString().length()-1); 
-            IRI classIRI= IRI.create(str);
+            //---------------------------------
+            OWLClassExpression resultExpr;
+            String str=list.getElementAt(i).toString();
+            
+             if (str.contains("ObjectIntersectionOf") || str.contains("ObjectSomeValuesFrom")) {
+
+                 Set<OWLClassExpression> selectedClasses = new HashSet<OWLClassExpression>();
+           
+            int startPosition = str.indexOf("ObjectIntersectionOf(<") + 22;
+            int lastPosition = str.indexOf(">");
+            String ingredientClass = str.substring(startPosition, lastPosition);
+
+            IRI ingredientClassIRI = IRI.create(ingredientClass);
+            OWLClass currentClass = Global.myOntology.getDf().getOWLClass(ingredientClassIRI);
+         
+              selectedClasses.add(currentClass);
+                   
+
+            //-----------------------------------------
+            startPosition += ingredientClass.length();
+            lastPosition = str.lastIndexOf(")");
+            String newString = str.substring(startPosition, lastPosition);
+
+            String[] parts = newString.split("ObjectSomeValuesFrom");
+            for (int k = 0; k < parts.length; k++) {
+                if (parts[k].length() > 2) {
+         
+                    startPosition = parts[k].indexOf("<") + 1;
+                    lastPosition = parts[k].indexOf(">");
+                    String propStr = parts[k].substring(startPosition, lastPosition);
+
+                    IRI propIRI = IRI.create(propStr);
+                    OWLObjectProperty prop = Global.myOntology.getDf().getOWLObjectProperty(propIRI);
+
+                 
+                    startPosition = parts[k].lastIndexOf("<") + 1;
+                    lastPosition = parts[k].lastIndexOf(">");
+                    String classStr = parts[k].substring(startPosition, lastPosition);
+
+                    IRI classIRI = IRI.create(classStr);
+                    OWLClass c = Global.myOntology.getDf().getOWLClass(classIRI);
+                    
+                   // add the descriptions   e.g (hasCuttingStyle some sliced)
+                  selectedClasses.add(Global.myOntology.getDf().getOWLObjectSomeValuesFrom(prop, c));
+
+                }
+            }
+            
+            resultExpr= Global.myOntology.getDf().getOWLObjectIntersectionOf(selectedClasses);
+            setOfClassExpressions.add(resultExpr);
+             }
+             else
+             {
+            String str1 = str.substring(1, str.length() - 1);
+            IRI classIRI = IRI.create(str1);
+
             OWLClass cls = Global.myOntology.getDf().getOWLClass(classIRI);
-            setOfClasses.add(cls);
+            setOfClassExpressions.add(cls);
+             }
+            
                 
-        }
+     
+    }
     }
 
     //This function returns the element with attName=attValue
@@ -185,7 +243,7 @@ public class QueryTemplateEngine {
 //This function for the simple type of query template.
 //it takes element that represent the query template and set of included things and excluded things
 //The output is the class expression
-    public static OWLClassExpression getResultedClassExprForSimpleTemplate(Element e, Set<OWLClass> includedThings, Set<OWLClass> excludedThings, OWLDataFactory df, IRI ontologyIRI) {
+    public static OWLClassExpression getResultedClassExprForSimpleTemplate(Element e, Set<OWLClassExpression> includedThings, Set<OWLClassExpression> excludedThings, OWLDataFactory df, IRI ontologyIRI) {
         Element baseElem = (Element) e.getElementsByTagName("BaseClass").item(0);
         Element propertyElem = (Element) e.getElementsByTagName("Property").item(0);
 
@@ -197,12 +255,12 @@ public class QueryTemplateEngine {
         // Everthing must be a BaseClass so add baseClass
         classes.add(baseClass);
         // Create the existential restrictions of things that we want to include.
-        for (OWLClass inThing : includedThings) {
+        for (OWLClassExpression inThing : includedThings) {
             classes.add(df.getOWLObjectSomeValuesFrom(objProp, inThing));
         }
 
         // Create the negative of existential restrictions of things that we want to exclude
-        for (OWLClass exThing : excludedThings) {
+        for (OWLClassExpression exThing : excludedThings) {
             OWLClassExpression existentialRestriction = df.getOWLObjectSomeValuesFrom(objProp, exThing);
             OWLObjectComplementOf negative = df.getOWLObjectComplementOf(existentialRestriction);
             classes.add(negative);
@@ -232,7 +290,7 @@ public class QueryTemplateEngine {
     //-------------------------------------------------
     
 
-    public static OWLClassExpression getResultedClassExprForComplexTemplate(Element e, Set<OWLClass> includedThings, Set<OWLClass> excludedThings, OWLDataFactory df, IRI ontologyIRI) {
+    public static OWLClassExpression getResultedClassExprForComplexTemplate(Element e, Set<OWLClassExpression> includedThings, Set<OWLClassExpression> excludedThings, OWLDataFactory df, IRI ontologyIRI) {
         Element baseElem = (Element) e.getElementsByTagName("BaseClass").item(0);
         Element propertyElem = (Element) e.getElementsByTagName("Property").item(0);
 
@@ -244,12 +302,12 @@ public class QueryTemplateEngine {
         // Everthing must be a BaseClass so add baseClass
         classes.add(baseClass);
         // Create the existential restrictions of things that we want to include.
-        for (OWLClass inThing : includedThings) {
+        for (OWLClassExpression inThing : includedThings) {
             classes.add(df.getOWLObjectSomeValuesFrom(objProp, getInclusionCriteria(e, inThing, df, ontologyIRI)));
         }
 
         // Create the negative of existential restrictions of things that we want to exclude
-        for (OWLClass exThing : excludedThings) {
+        for (OWLClassExpression exThing : excludedThings) {
             OWLClassExpression existentialRestriction = df.getOWLObjectSomeValuesFrom(objProp, getInclusionCriteria(e, exThing, df, ontologyIRI));
             OWLObjectComplementOf negative = df.getOWLObjectComplementOf(existentialRestriction);
             classes.add(negative);
@@ -260,7 +318,7 @@ public class QueryTemplateEngine {
         return resultExpr;
     }
 
-    public static OWLClassExpression getInclusionCriteria(Element e, OWLClass Thing, OWLDataFactory df, IRI ontologyIRI) {
+    public static OWLClassExpression getInclusionCriteria(Element e, OWLClassExpression Thing, OWLDataFactory df, IRI ontologyIRI) {
 
         //get the query template where ref=ID
         Element tempRefElem = (Element) e.getElementsByTagName("Template").item(0);

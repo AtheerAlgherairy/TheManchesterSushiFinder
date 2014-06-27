@@ -4,18 +4,25 @@
  */
 package com.mycompany.manchestersushifinder;
 
-
+import org.semanticweb.owlapi.util.BidirectionalShortFormProvider;
+import org.semanticweb.owlapi.util.BidirectionalShortFormProviderAdapter;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Set;
 import javax.swing.JOptionPane;
+import org.coode.owlapi.manchesterowlsyntax.ManchesterOWLSyntaxEditorParser;
 import org.semanticweb.HermiT.Reasoner;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.expression.OWLEntityChecker;
+import org.semanticweb.owlapi.expression.ParserException;
+import org.semanticweb.owlapi.expression.ShortFormEntityChecker;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
@@ -23,6 +30,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
+import org.semanticweb.owlapi.util.BidirectionalShortFormProviderAdapter;
 import org.semanticweb.owlapi.util.ShortFormProvider;
 import org.semanticweb.owlapi.util.SimpleShortFormProvider;
 
@@ -39,6 +47,9 @@ public class OntologyClass {
     private OWLOntologyManager manager;
     private IRI ontologyIRI;
     private String ontologyLocation;
+     private BidirectionalShortFormProvider bidiShortFormProvider;
+
+
 
     
     //This constructer to be used from NewConfigurationFileDialog
@@ -340,4 +351,7 @@ public class OntologyClass {
         }
 
     }
+
+     
+     
 }

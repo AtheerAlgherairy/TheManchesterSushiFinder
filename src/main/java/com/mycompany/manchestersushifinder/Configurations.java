@@ -79,6 +79,35 @@ public class Configurations {
         }
         return listOfBases;
     }
+    
+        public ArrayList<IRI[]> getSanctions() {
+
+        ArrayList<IRI[]> listOfSanctions = null;
+
+
+        Element element = (Element) doc.getDocumentElement().getElementsByTagName("Sanctions").item(0);
+        if(element !=null)
+        {
+        listOfSanctions = new ArrayList<IRI[]>();
+        NodeList list = element.getChildNodes();
+        for (int i = 0; i < list.getLength(); i++) {
+            Node n = list.item(i);
+            if (n instanceof Element) {
+
+                Element el = (Element) n;
+              
+                    IRI classC =IRI.create(el.getAttribute("classC"));
+                    IRI property =IRI.create(el.getAttribute("property"));
+                    IRI classD =IRI.create(el.getAttribute("classD"));
+
+                    listOfSanctions.add(new IRI[]{classC,property,classD});
+
+               
+            }
+        }
+        }
+        return listOfSanctions;
+    }
 
     public ArrayList<String> getAvailableLanguages() {
 
