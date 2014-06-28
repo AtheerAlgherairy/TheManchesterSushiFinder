@@ -4,6 +4,7 @@
  */
 package com.mycompany.manchestersushifinder;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Rectangle;
@@ -11,13 +12,18 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
@@ -26,9 +32,12 @@ import javax.swing.DefaultListModel;
 import javax.swing.DropMode;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTree;
 import javax.swing.ListCellRenderer;
@@ -159,7 +168,7 @@ public class QueryInterface extends javax.swing.JFrame {
                 String str = value.toString().substring(1, value.toString().length() - 1);
                 IRI classIRI = IRI.create(str);
                 OWLClass cls = Global.myOntology.getDf().getOWLClass(classIRI);
-                getReasonableOptions(cls,"included");
+                getReasonableOptions(cls, "included");
                 //--------------------------------------
 
             }
@@ -176,14 +185,14 @@ public class QueryInterface extends javax.swing.JFrame {
 
             public void intervalAdded(ListDataEvent e) {
                 updateNumberOfResults();
-                
-                
+
+
                 //------20 June---------------------
                 Object value = ExcludedList.getElementAt(ExcludedList.getSize() - 1);
                 String str = value.toString().substring(1, value.toString().length() - 1);
                 IRI classIRI = IRI.create(str);
                 OWLClass cls = Global.myOntology.getDf().getOWLClass(classIRI);
-                getReasonableOptions(cls,"excluded");
+                getReasonableOptions(cls, "excluded");
                 //--------------------------------------
             }
 
@@ -600,7 +609,7 @@ public class QueryInterface extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-      
+
         //Which Radio Button is selected?
         Element templateElement = Global.myConfig.getNodeWithAttribute(Global.myConfig.getRootElement(), "Id", selectedTemplate);
         QueryTemplateEngine myEngine = new QueryTemplateEngine(IncludedList, ExcludedList, templateElement, Global.myOntology.getDf(), Global.myOntology.getOntologyIRI(), Global.myOntology.getReasoner());
@@ -676,76 +685,183 @@ public class QueryInterface extends javax.swing.JFrame {
     void getReasonableOptions(OWLClass cls, String type) {
 
         String currentClassName = Global.myOntology.getOWLClassAlternativeLanguage(cls, QueryInterface.selectedLanguage);
-        int num = mySanctions.getSetOfReasonableClasses(cls).size();
+
+        mySanctions.calculateSetOfReasonableClasses(cls);
+        int num = mySanctions.getSetOfR().size();
 
         if (num != 0) {
             JCheckBox[] checkboxes = new JCheckBox[num];
+            String[][] arr = new String[num][2];
 
             for (int i = 0; i < num; i++) {
-                OWLClass c = mySanctions.getSetOfReasonableClasses(cls).get(i);
+                OWLClass c = mySanctions.getSetOfR().get(i);
                 OWLClassExpression expr = mySanctions.getExpressions().get(i);
                 String className = Global.myOntology.getOWLClassAlternativeLanguage(c, QueryInterface.selectedLanguage);
-                JCheckBox cb = new JCheckBox();
-                //cb.setName(c.toString());
-                cb.setName(expr.toString());
-                cb.setText(className);
-                checkboxes[i] = cb;
+
+                arr[i][0] = expr.toString();
+                //arr[i][1] = className.toString();
+
+                arr[i][1] = c.toString();
+
+                //  JCheckBox cb = new JCheckBox();
+
+
+                // cb.setName(expr.toString());
+                // cb.setText(className);
+                // checkboxes[i] = cb;
             }
+
+            Arrays.sort(arr, new ColumnComparator(0));
+
+
+            JPanel[] listOfPanels = new JPanel[mySanctions.getListOfProperties().size()];
+
+            final Set<OWLClassExpression> selectedClasses = new HashSet<OWLClassExpression>();
+            for (int i = 0; i < mySanctions.getListOfProperties().size(); i++) {
+
+                final OWLObjectProperty prop = mySanctions.getListOfProperties().get(i);
+                JLabel propName = new JLabel(Global.myOntology.getOWLObjectPropertyAlternativeLanguage(prop, QueryInterface.selectedLanguage));
+                JPanel newPanel = new JPanel();
+                newPanel.add(propName);
+
+                JComboBox combo = new JComboBox();
+                combo.addItem("#Nonee");
+
+                for (int k = 0; k < num; k++) {
+                    if (arr[k][0].contains(prop.toString())) {
+                        combo.addItem(arr[k][1]);
+                    }
+                }
+
+                combo.addItemListener(new ItemListener() {
+                    public void itemStateChanged(ItemEvent arg0) {
+                        if (arg0.getStateChange() == ItemEvent.SELECTED) {
+                            Object item = arg0.getItem();
+                            
+                            if(!item.equals("#Nonee"))
+                            {
+                            String myClassStr = item.toString().substring(item.toString().lastIndexOf("<") + 1, item.toString().lastIndexOf(">"));
+                            IRI classIRI = IRI.create(myClassStr);
+                            OWLClass myClass = Global.myOntology.getDf().getOWLClass(classIRI);
+
+                            // add the descriptions   e.g (hasCuttingStyle some sliced)
+                            selectedClasses.add(Global.myOntology.getDf().getOWLObjectSomeValuesFrom(prop, myClass));
+
+                            }
+                        }
+                        if (arg0.getStateChange() == ItemEvent.DESELECTED) {
+                            Object item = arg0.getItem();
+                                   if(!item.equals("#Nonee"))
+                            {
+                            String myClassStr = item.toString().substring(item.toString().lastIndexOf("<") + 1, item.toString().lastIndexOf(">"));
+                            IRI classIRI = IRI.create(myClassStr);
+                            OWLClass myClass = Global.myOntology.getDf().getOWLClass(classIRI);
+
+                            // remove the descriptions   e.g (hasCuttingStyle some sliced)
+                            selectedClasses.remove(Global.myOntology.getDf().getOWLObjectSomeValuesFrom(prop, myClass));
+
+                            }
+                        }
+
+                    }
+                });
+                combo.setName(prop.toString());
+                combo.setRenderer(
+                        new OWLClassListCellRenderer(selectedLanguage));
+                newPanel.add(combo);
+                listOfPanels[i] = newPanel;
+            }
+
+
+
             String message = "Do you want to specify further characteristics for the " + currentClassName + " ?";
-            Object[] params = {message, checkboxes};
+            Object[] params = {message, listOfPanels};
             int n = JOptionPane.showConfirmDialog(this, params, "Further characteristics", JOptionPane.YES_NO_OPTION);
 
 
-            Set<OWLClassExpression> selectedClasses = new HashSet<OWLClassExpression>();
             if (n == 0) { //yes?
 
-                boolean atLeastOneIsSelected = false;
-                for (int k = 0; k < checkboxes.length; k++) {
-                    if (checkboxes[k].isSelected()) {
-
-                        atLeastOneIsSelected = true;
-                        String str = checkboxes[k].getName().toString();
-
-                        //get the class
-                        String myClassStr = str.substring(str.lastIndexOf("<") + 1, str.lastIndexOf(">"));
-                        IRI classIRI = IRI.create(myClassStr);
-                        OWLClass myClass = Global.myOntology.getDf().getOWLClass(classIRI);
-
-                        //get the property
-                        String myPropertyStr = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
-                        IRI propertyIRI = IRI.create(myPropertyStr);
-                        OWLObjectProperty myProperty = Global.myOntology.getDf().getOWLObjectProperty(propertyIRI);
-
-
-
-
-                        // add the descriptions   e.g (hasCuttingStyle some sliced)
-                        selectedClasses.add(Global.myOntology.getDf().getOWLObjectSomeValuesFrom(myProperty, myClass));
-
-                    }
-                }
-
-                if (atLeastOneIsSelected) {
-                    // add the ingredient (e.g salmon)
-                    selectedClasses.add(cls);
-                    OWLClassExpression resultExpr = Global.myOntology.getDf().getOWLObjectIntersectionOf(selectedClasses);
-
-                    if(type.equalsIgnoreCase("included"))
-                    {
+            if(!selectedClasses.isEmpty())
+            {
+               // add the ingredient (e.g salmon)
+             selectedClasses.add(cls);
+            
+             OWLClassExpression resultExpr = Global.myOntology.getDf().getOWLObjectIntersectionOf(selectedClasses);
+               
+           
+                if (type.equalsIgnoreCase("included")) {
                     IncludedList.remove(IncludedList.getSize() - 1);
                     IncludedList.addElement(resultExpr);
-                    }
-                    else
-                    {
-                     ExcludedList.remove(ExcludedList.getSize() - 1);
-                     ExcludedList.addElement(resultExpr);
-                    }
+                } else {
+                    ExcludedList.remove(ExcludedList.getSize() - 1);
+                    ExcludedList.addElement(resultExpr);
                 }
+            }
+            }
+            /*   for(int k=0;k<num;k++)
+             {
+             JCheckBox cb = new JCheckBox();
+
+             cb.setName(arr[k][0]);
+             cb.setText(arr[k][1]);
+             checkboxes[k] = cb;
+             }
+           
+         
+             String message = "Do you want to specify further characteristics for the " + currentClassName + " ?";
+             Object[] params = {message, checkboxes};
+             int n = JOptionPane.showConfirmDialog(this, params, "Further characteristics", JOptionPane.YES_NO_OPTION);
+
+
+             Set<OWLClassExpression> selectedClasses = new HashSet<OWLClassExpression>();
+             if (n == 0) { //yes?
+
+             boolean atLeastOneIsSelected = false;
+             for (int k = 0; k < checkboxes.length; k++) {
+             if (checkboxes[k].isSelected()) {
+
+             atLeastOneIsSelected = true;
+             String str = checkboxes[k].getName().toString();
+
+             //get the class
+             String myClassStr = str.substring(str.lastIndexOf("<") + 1, str.lastIndexOf(">"));
+             IRI classIRI = IRI.create(myClassStr);
+             OWLClass myClass = Global.myOntology.getDf().getOWLClass(classIRI);
+
+             //get the property
+             String myPropertyStr = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
+             IRI propertyIRI = IRI.create(myPropertyStr);
+             OWLObjectProperty myProperty = Global.myOntology.getDf().getOWLObjectProperty(propertyIRI);
 
 
 
-            } 
+
+             // add the descriptions   e.g (hasCuttingStyle some sliced)
+             selectedClasses.add(Global.myOntology.getDf().getOWLObjectSomeValuesFrom(myProperty, myClass));
+
+             }
+             }
+
+             if (atLeastOneIsSelected) {
+             // add the ingredient (e.g salmon)
+             selectedClasses.add(cls);
+             OWLClassExpression resultExpr = Global.myOntology.getDf().getOWLObjectIntersectionOf(selectedClasses);
+
+             if (type.equalsIgnoreCase("included")) {
+             IncludedList.remove(IncludedList.getSize() - 1);
+             IncludedList.addElement(resultExpr);
+             } else {
+             ExcludedList.remove(ExcludedList.getSize() - 1);
+             ExcludedList.addElement(resultExpr);
+             }
+             }
+
+
+
+             }
+             */
         }
+
 
     }
 
@@ -924,7 +1040,7 @@ class OWLClassListCellRenderer implements ListCellRenderer {
             String[] parts = newString.split("ObjectSomeValuesFrom");
             for (int i = 0; i < parts.length; i++) {
                 if (parts[i].length() > 2) {
-         
+
                     startPosition = parts[i].indexOf("<") + 1;
                     lastPosition = parts[i].indexOf(">");
                     String propStr = parts[i].substring(startPosition, lastPosition);
@@ -956,5 +1072,23 @@ class OWLClassListCellRenderer implements ListCellRenderer {
 
         }
         return rendererLabel;
+    }
+}
+
+//Class that extends Comparator
+class ColumnComparator implements Comparator {
+
+    int columnToSort;
+
+    ColumnComparator(int columnToSort) {
+        this.columnToSort = columnToSort;
+    }
+    //overriding compare method
+
+    public int compare(Object o1, Object o2) {
+        String[] row1 = (String[]) o1;
+        String[] row2 = (String[]) o2;
+        //compare the columns to sort
+        return row1[columnToSort].compareTo(row2[columnToSort]);
     }
 }
