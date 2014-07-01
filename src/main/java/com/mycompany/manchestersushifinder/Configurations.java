@@ -12,6 +12,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -76,6 +77,12 @@ public class Configurations {
 
                 }
             }
+        }
+        
+        if(listOfBases.isEmpty())
+        {
+            JOptionPane.showMessageDialog(null, "Sorry, at least one base thing should be showable.\n" , "Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
         }
         return listOfBases;
     }
