@@ -94,6 +94,7 @@ public class QueryTemplateEngine {
             satisfiable=false;
          //-----------------------------------
    
+     
           return onlySatisfiableClasses(reasoner.getSubClasses(expr, false));
   
  

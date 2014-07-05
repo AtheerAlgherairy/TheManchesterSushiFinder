@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -47,8 +48,11 @@ import javax.swing.event.ListDataListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotation;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.w3c.dom.Element;
 
@@ -615,6 +619,30 @@ public class QueryInterface extends javax.swing.JFrame {
         QueryTemplateEngine myEngine = new QueryTemplateEngine(IncludedList, ExcludedList, templateElement, Global.myOntology.getDf(), Global.myOntology.getOntologyIRI(), Global.myOntology.getReasoner());
         Collection resultCollection = myEngine.getQueryResults();
 
+
+        //--------------Check Whether the result class is expect to appear or not?---------
+        //------------- Using the configuration element (DontShowResult)
+        String[] dontShowAnnotation = Global.myConfig.getDontShowResultAnnotationIRIAndValue();
+        if (dontShowAnnotation != null) {
+            
+            OWLLiteral val = null;
+      
+           for(int k=0;k<resultCollection.size();k++){
+                OWLClass cl = (OWLClass) resultCollection.toArray()[k];
+                IRI annotationIRI = IRI.create(dontShowAnnotation[0]);       
+                for (OWLAnnotation ann : cl.getAnnotations(Global.myOntology.getOntology(), Global.myOntology.getDf().getOWLAnnotationProperty(annotationIRI))) {
+                    val = (OWLLiteral) ann.getValue();
+                    if (val.getLiteral().equals(dontShowAnnotation[1])) {
+                        resultCollection.remove(cl);
+                        break;
+                    }
+
+                }
+            }
+
+        }
+
+        //---------------------------------------------------------
         if (myEngine.getSatisfiable()) {
 
             //---------fill the available Results Characteristics from config.xml--------
@@ -645,6 +673,28 @@ public class QueryInterface extends javax.swing.JFrame {
         Element templateElement = Global.myConfig.getNodeWithAttribute(Global.myConfig.getRootElement(), "Id", selectedTemplate);
         QueryTemplateEngine myEngine = new QueryTemplateEngine(IncludedList, ExcludedList, templateElement, Global.myOntology.getDf(), Global.myOntology.getOntologyIRI(), Global.myOntology.getReasoner());
         Collection resultCollection = myEngine.getQueryResults();
+        
+        //--------------Check Whether the result class is expect to appear or not?---------
+        //------------- Using the configuration element (DontShowResult)
+        String[] dontShowAnnotation = Global.myConfig.getDontShowResultAnnotationIRIAndValue();
+        if (dontShowAnnotation != null) {
+            
+            OWLLiteral val = null;
+      
+           for(int k=0;k<resultCollection.size();k++){
+                OWLClass cl = (OWLClass) resultCollection.toArray()[k];
+                IRI annotationIRI = IRI.create(dontShowAnnotation[0]);       
+                for (OWLAnnotation ann : cl.getAnnotations(Global.myOntology.getOntology(), Global.myOntology.getDf().getOWLAnnotationProperty(annotationIRI))) {
+                    val = (OWLLiteral) ann.getValue();
+                    if (val.getLiteral().equals(dontShowAnnotation[1])) {
+                        resultCollection.remove(cl);
+                        break;
+                    }
+
+                }
+            }
+
+        }
         this.noOfResultsLabel.setText("Results (" + resultCollection.size() + ")");
     }
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -737,28 +787,26 @@ public class QueryInterface extends javax.swing.JFrame {
                     public void itemStateChanged(ItemEvent arg0) {
                         if (arg0.getStateChange() == ItemEvent.SELECTED) {
                             Object item = arg0.getItem();
-                            
-                            if(!item.equals("#Nonee"))
-                            {
-                            String myClassStr = item.toString().substring(item.toString().lastIndexOf("<") + 1, item.toString().lastIndexOf(">"));
-                            IRI classIRI = IRI.create(myClassStr);
-                            OWLClass myClass = Global.myOntology.getDf().getOWLClass(classIRI);
 
-                            // add the descriptions   e.g (hasCuttingStyle some sliced)
-                            selectedClasses.add(Global.myOntology.getDf().getOWLObjectSomeValuesFrom(prop, myClass));
+                            if (!item.equals("#Nonee")) {
+                                String myClassStr = item.toString().substring(item.toString().lastIndexOf("<") + 1, item.toString().lastIndexOf(">"));
+                                IRI classIRI = IRI.create(myClassStr);
+                                OWLClass myClass = Global.myOntology.getDf().getOWLClass(classIRI);
+
+                                // add the descriptions   e.g (hasCuttingStyle some sliced)
+                                selectedClasses.add(Global.myOntology.getDf().getOWLObjectSomeValuesFrom(prop, myClass));
 
                             }
                         }
                         if (arg0.getStateChange() == ItemEvent.DESELECTED) {
                             Object item = arg0.getItem();
-                                   if(!item.equals("#Nonee"))
-                            {
-                            String myClassStr = item.toString().substring(item.toString().lastIndexOf("<") + 1, item.toString().lastIndexOf(">"));
-                            IRI classIRI = IRI.create(myClassStr);
-                            OWLClass myClass = Global.myOntology.getDf().getOWLClass(classIRI);
+                            if (!item.equals("#Nonee")) {
+                                String myClassStr = item.toString().substring(item.toString().lastIndexOf("<") + 1, item.toString().lastIndexOf(">"));
+                                IRI classIRI = IRI.create(myClassStr);
+                                OWLClass myClass = Global.myOntology.getDf().getOWLClass(classIRI);
 
-                            // remove the descriptions   e.g (hasCuttingStyle some sliced)
-                            selectedClasses.remove(Global.myOntology.getDf().getOWLObjectSomeValuesFrom(prop, myClass));
+                                // remove the descriptions   e.g (hasCuttingStyle some sliced)
+                                selectedClasses.remove(Global.myOntology.getDf().getOWLObjectSomeValuesFrom(prop, myClass));
 
                             }
                         }
@@ -781,22 +829,21 @@ public class QueryInterface extends javax.swing.JFrame {
 
             if (n == 0) { //yes?
 
-            if(!selectedClasses.isEmpty())
-            {
-               // add the ingredient (e.g salmon)
-             selectedClasses.add(cls);
-            
-             OWLClassExpression resultExpr = Global.myOntology.getDf().getOWLObjectIntersectionOf(selectedClasses);
-               
-           
-                if (type.equalsIgnoreCase("included")) {
-                    IncludedList.remove(IncludedList.getSize() - 1);
-                    IncludedList.addElement(resultExpr);
-                } else {
-                    ExcludedList.remove(ExcludedList.getSize() - 1);
-                    ExcludedList.addElement(resultExpr);
+                if (!selectedClasses.isEmpty()) {
+                    // add the ingredient (e.g salmon)
+                    selectedClasses.add(cls);
+
+                    OWLClassExpression resultExpr = Global.myOntology.getDf().getOWLObjectIntersectionOf(selectedClasses);
+
+
+                    if (type.equalsIgnoreCase("included")) {
+                        IncludedList.remove(IncludedList.getSize() - 1);
+                        IncludedList.addElement(resultExpr);
+                    } else {
+                        ExcludedList.remove(ExcludedList.getSize() - 1);
+                        ExcludedList.addElement(resultExpr);
+                    }
                 }
-            }
             }
             /*   for(int k=0;k<num;k++)
              {

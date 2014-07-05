@@ -77,6 +77,16 @@
                     </xs:complexType>
                 </xs:element> 
                 
+                
+     <xs:element name="DontShowResult" maxOccurs="1" minOccurs="0">
+      <xs:complexType>
+             <xs:attribute name="annotationIRI" type="xs:string" use="required"/>
+             <xs:attribute name="value" type="xs:string" use="required"/>
+      </xs:complexType>
+  </xs:element>
+               
+                
+                
          <xs:element name="IngredientsFacets" maxOccurs="1" minOccurs="0">
                     <xs:complexType>
                         <xs:sequence maxOccurs="unbounded" minOccurs="0">

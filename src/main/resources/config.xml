@@ -14,7 +14,7 @@
     
    
     
-    <TitleLabel text="Suhsi Box "/>
+    <TitleLabel text="Sushi Box "/>
     <IncludedLabel />
     <ExcludedLabel />
     
@@ -47,7 +47,8 @@
         <ResultsCharacteristic  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#LowCaloriesPlatter" url="/lowCalIcon.jpg" />   
     </ResultsCharacteristics> 
     
-    
+    <DontShowResult annotationIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#dontShow" value="true"/>
+
     <QueryTemplates>
         
         <SimpleTemplate Id="ID1" name="Sushi" show="yes">
@@ -77,9 +78,8 @@
     <Sanctions>
         <Sanction classC="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#Meat" property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasCookingStyle" classD="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#CookingStyle"/>
         <Sanction classC="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#Meat" property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasCuttingStyle" classD="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#Sliced"/>
-    
-    <Sanction classC="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SeaFood" property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasCuttingStyle" classD="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#CuttingStyle"/>
-    <Sanction classC="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#Duck" property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasCuttingStyle" classD="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#Shredded"/>
+        <Sanction classC="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SeaFood" property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasCuttingStyle" classD="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#CuttingStyle"/>
+        <Sanction classC="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SushiIngredient" property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasSpiciness" classD="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#Spiciness"/>
     </Sanctions>
     
 </FinderConfiguration>

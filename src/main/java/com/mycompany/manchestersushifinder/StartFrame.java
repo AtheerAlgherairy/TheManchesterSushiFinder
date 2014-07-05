@@ -193,7 +193,7 @@ public class StartFrame extends javax.swing.JFrame {
         
          if(!Global.myConfig.getIngredientsFactes().isEmpty())
          {
-        tabbedPane.addTab("facets",fourthView);
+        tabbedPane.addTab("Facets",fourthView);
        // tabbedPane.setMnemonicAt(3, KeyEvent.VK_4);
          }
         qframe.BrowsingPanel.add(tabbedPane);

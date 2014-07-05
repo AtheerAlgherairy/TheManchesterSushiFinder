@@ -207,6 +207,19 @@ public class Configurations {
         return classRenderingUse;
         //if there is no selected language, use IRI or Label without language to render class names??
     }
+    
+    public String[] getDontShowResultAnnotationIRIAndValue()
+    {
+        String[] annotation=null;
+        Element element = (Element) doc.getDocumentElement().getElementsByTagName("DontShowResult").item(0);
+        if (element != null) {
+            annotation=new String[2];
+            annotation[0] = element.getAttribute("annotationIRI"); //Annotation IRI
+            annotation[1] = element.getAttribute("value"); //Annotation Value
+        }
+        
+        return annotation;
+    }
 
     public void setConfigFileURL(String configFileURL) {
         this.configFileURL = configFileURL;
