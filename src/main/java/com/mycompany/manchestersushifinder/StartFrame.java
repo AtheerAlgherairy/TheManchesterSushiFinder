@@ -224,7 +224,7 @@ public class StartFrame extends javax.swing.JFrame {
             Logger.getLogger(QueryInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
         qframe.jSplitPane1.setDividerLocation(250);
-        qframe.setResizable(false);
+        //qframe.setResizable(false);
 
         // timer.stop();
 

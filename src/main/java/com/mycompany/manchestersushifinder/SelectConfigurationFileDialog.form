@@ -66,14 +66,14 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Upload your configuration file:"/>
+        <Property name="text" type="java.lang.String" value="Select configuration file to be used:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="configURL">
     </Component>
     <Component class="javax.swing.JButton" name="uploadLogoButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="upload"/>
+        <Property name="text" type="java.lang.String" value="Browse"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uploadLogoButtonActionPerformed"/>

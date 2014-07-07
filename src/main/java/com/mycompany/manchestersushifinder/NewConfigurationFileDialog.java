@@ -1103,12 +1103,12 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
 
         IngredientClass ingredientClassElement = finderConfigElement.addNewIngredientClass();
         if (classesCombo.getSelectedItem() != null) {
-            ingredientClassElement.setName(classesCombo.getSelectedItem().toString());
+            ingredientClassElement.setClass1(classesCombo.getSelectedItem().toString());
         }
 
         ResultsAnnotationProperty resultsAnnoPropElement = finderConfigElement.addNewResultsAnnotationProperty();
         if (annoPropertiesCombo.getSelectedItem() != null) {
-            resultsAnnoPropElement.setName(annoPropertiesCombo.getSelectedItem().toString());
+            resultsAnnoPropElement.setProperty(annoPropertiesCombo.getSelectedItem().toString());
         }
 
         AvailableLanguages availableLangsElement = finderConfigElement.addNewAvailableLanguages();

@@ -48,9 +48,9 @@ public class SelectConfigurationFileDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Select Configuration File");
 
-        jLabel1.setText("Upload your configuration file:");
+        jLabel1.setText("Select configuration file to be used:");
 
-        uploadLogoButton.setText("upload");
+        uploadLogoButton.setText("Browse");
         uploadLogoButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 uploadLogoButtonActionPerformed(evt);

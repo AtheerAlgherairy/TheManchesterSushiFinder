@@ -135,11 +135,13 @@ public class Configurations {
         return listOfLanguages;
     }
 
+      
+    
     public IRI getIngredientClass() {
         String ingredientClassName = null;
         Element element = (Element) doc.getDocumentElement().getElementsByTagName("IngredientClass").item(0);
         if (element != null) {
-            ingredientClassName = element.getAttribute("name");
+            ingredientClassName = element.getAttribute("class");
         }
         return IRI.create(ingredientClassName);
     }
@@ -148,7 +150,7 @@ public class Configurations {
         String annotaionPropertyName = null;
         Element element = (Element) doc.getDocumentElement().getElementsByTagName("ResultsAnnotationProperty").item(0);
         if (element != null) {
-            annotaionPropertyName = element.getAttribute("name");
+            annotaionPropertyName = element.getAttribute("property");
         }
         return IRI.create(annotaionPropertyName);
     }
@@ -208,6 +210,7 @@ public class Configurations {
         //if there is no selected language, use IRI or Label without language to render class names??
     }
     
+   //1#----------------------------------------------
     public String[] getDontShowResultAnnotationIRIAndValue()
     {
         String[] annotation=null;
@@ -220,6 +223,32 @@ public class Configurations {
         
         return annotation;
     }
+    //2#--------------------------------------------------
+    
+     public ArrayList<IRI> getExcludedClassesFromResults() {
+         
+        ArrayList<IRI> listOfClasses = new ArrayList<IRI>();
+
+        Element element = (Element) doc.getDocumentElement().getElementsByTagName("DontShow").item(0);
+        if(element!=null)
+        {
+        NodeList list = element.getChildNodes();
+        for (int i = 0; i < list.getLength(); i++) {
+            Node n = list.item(i);
+            if (n instanceof Element) {
+
+                Element el = (Element) n;
+                String text = el.getAttribute("classIRI");
+                listOfClasses.add(IRI.create(text));
+
+            }
+        }
+        }
+        return listOfClasses;
+      }
+    
+    
+    //---------------------------------------------------
 
     public void setConfigFileURL(String configFileURL) {
         this.configFileURL = configFileURL;

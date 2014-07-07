@@ -269,8 +269,7 @@ public class NewFacetedSearchPanel extends javax.swing.JPanel {
             ingredientsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ingredientsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE))
         );
         ingredientsPanelLayout.setVerticalGroup(
             ingredientsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

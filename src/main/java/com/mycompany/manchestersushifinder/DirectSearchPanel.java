@@ -113,12 +113,12 @@ public class DirectSearchPanel extends javax.swing.JPanel {
         SearchBoxPanel.setLayout(SearchBoxPanelLayout);
         SearchBoxPanelLayout.setHorizontalGroup(
             SearchBoxPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(SearchBoxPanelLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SearchBoxPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(SearchBoxPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(32, Short.MAX_VALUE))
+                    .addComponent(searchField, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE))
+                .addGap(26, 26, 26))
         );
         SearchBoxPanelLayout.setVerticalGroup(
             SearchBoxPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -126,8 +126,8 @@ public class DirectSearchPanel extends javax.swing.JPanel {
                 .addGap(10, 10, 10)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addComponent(searchField)
+                .addGap(16, 16, 16))
         );
 
         add(SearchBoxPanel, java.awt.BorderLayout.PAGE_START);
@@ -142,8 +142,7 @@ public class DirectSearchPanel extends javax.swing.JPanel {
             ingredientsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ingredientsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE))
         );
         ingredientsPanelLayout.setVerticalGroup(
             ingredientsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

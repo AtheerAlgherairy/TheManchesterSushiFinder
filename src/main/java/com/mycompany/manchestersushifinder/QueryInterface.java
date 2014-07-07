@@ -4,7 +4,6 @@
  */
 package com.mycompany.manchestersushifinder;
 
-import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Rectangle;
@@ -24,7 +23,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
@@ -34,7 +32,6 @@ import javax.swing.DropMode;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -49,7 +46,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
-import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLLiteral;
@@ -349,7 +345,9 @@ public class QueryInterface extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jMenuItem1 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -416,12 +414,12 @@ public class QueryInterface extends javax.swing.JFrame {
         IncludedPanel.setLayout(IncludedPanelLayout);
         IncludedPanelLayout.setHorizontalGroup(
             IncludedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(IncludedPanelLayout.createSequentialGroup()
-                .addGap(32, 32, 32)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, IncludedPanelLayout.createSequentialGroup()
+                .addContainerGap(22, Short.MAX_VALUE)
                 .addGroup(IncludedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(includedRemoveKey)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 444, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(251, Short.MAX_VALUE))
+                .addGap(251, 251, 251))
         );
         IncludedPanelLayout.setVerticalGroup(
             IncludedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -458,12 +456,12 @@ public class QueryInterface extends javax.swing.JFrame {
         ExcludedPanel.setLayout(ExcludedPanelLayout);
         ExcludedPanelLayout.setHorizontalGroup(
             ExcludedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ExcludedPanelLayout.createSequentialGroup()
-                .addGap(32, 32, 32)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ExcludedPanelLayout.createSequentialGroup()
+                .addContainerGap(22, Short.MAX_VALUE)
                 .addGroup(ExcludedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(excludedRemoveKey)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 444, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(251, Short.MAX_VALUE))
+                .addGap(251, 251, 251))
         );
         ExcludedPanelLayout.setVerticalGroup(
             ExcludedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -541,7 +539,7 @@ public class QueryInterface extends javax.swing.JFrame {
                     .addComponent(ContentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(ChooserPanelLayout.createSequentialGroup()
                         .addComponent(FooterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 14, Short.MAX_VALUE)))
+                        .addGap(0, 4, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         ChooserPanelLayout.setVerticalGroup(
@@ -566,6 +564,9 @@ public class QueryInterface extends javax.swing.JFrame {
         });
         jMenu2.add(jMenuItem3);
 
+        jMenuItem4.setText("Modify Configuration File");
+        jMenu2.add(jMenuItem4);
+
         jMenuItem2.setText("Select Configuration File");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -573,6 +574,7 @@ public class QueryInterface extends javax.swing.JFrame {
             }
         });
         jMenu2.add(jMenuItem2);
+        jMenu2.add(jSeparator1);
 
         jMenuItem1.setText("About...");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -592,11 +594,13 @@ public class QueryInterface extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(HeaderPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(HeaderPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 18, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(20, 20, 20)
-                        .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 803, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                .addGap(20, 20, 20))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -617,29 +621,54 @@ public class QueryInterface extends javax.swing.JFrame {
         //Which Radio Button is selected?
         Element templateElement = Global.myConfig.getNodeWithAttribute(Global.myConfig.getRootElement(), "Id", selectedTemplate);
         QueryTemplateEngine myEngine = new QueryTemplateEngine(IncludedList, ExcludedList, templateElement, Global.myOntology.getDf(), Global.myOntology.getOntologyIRI(), Global.myOntology.getReasoner());
-        Collection resultCollection = myEngine.getQueryResults();
+        Collection<OWLClass> resultCollection = myEngine.getQueryResults();
 
 
         //--------------Check Whether the result class is expect to appear or not?---------
         //------------- Using the configuration element (DontShowResult)
-        String[] dontShowAnnotation = Global.myConfig.getDontShowResultAnnotationIRIAndValue();
+       /* String[] dontShowAnnotation = Global.myConfig.getDontShowResultAnnotationIRIAndValue();
+
         if (dontShowAnnotation != null) {
-            
+
             OWLLiteral val = null;
-      
-           for(int k=0;k<resultCollection.size();k++){
-                OWLClass cl = (OWLClass) resultCollection.toArray()[k];
-                IRI annotationIRI = IRI.create(dontShowAnnotation[0]);       
+            Collection<OWLClass> toBeRemoved = new ArrayList<OWLClass>();
+
+            for (Iterator<OWLClass> it = resultCollection.iterator(); it.hasNext();) {
+                OWLClass cl = it.next();
+                IRI annotationIRI = IRI.create(dontShowAnnotation[0]);
                 for (OWLAnnotation ann : cl.getAnnotations(Global.myOntology.getOntology(), Global.myOntology.getDf().getOWLAnnotationProperty(annotationIRI))) {
                     val = (OWLLiteral) ann.getValue();
                     if (val.getLiteral().equals(dontShowAnnotation[1])) {
-                        resultCollection.remove(cl);
+                        toBeRemoved.add(cl);
+
+                      
+
                         break;
                     }
-
                 }
+
             }
 
+            resultCollection.removeAll(toBeRemoved);
+        } */
+
+
+        ArrayList<IRI> dontShowClasses = Global.myConfig.getExcludedClassesFromResults();
+        if (dontShowClasses != null) {
+
+            Collection<OWLClass> toBeRemoved = new ArrayList<OWLClass>();
+
+            for (Iterator<OWLClass> it = resultCollection.iterator(); it.hasNext();) {
+                OWLClass cl = it.next();
+
+                for (int j = 0; j < dontShowClasses.size(); j++) {
+                    if (dontShowClasses.get(j).equals(cl.getIRI())) {
+                        toBeRemoved.add(cl);
+                        break;
+                    }
+                }
+            }
+           resultCollection.removeAll(toBeRemoved);
         }
 
         //---------------------------------------------------------
@@ -667,34 +696,56 @@ public class QueryInterface extends javax.swing.JFrame {
 
         }
     }//GEN-LAST:event_jButton1ActionPerformed
-
 //Extensional Feedback---------------------------------    
+
     public void updateNumberOfResults() {
         Element templateElement = Global.myConfig.getNodeWithAttribute(Global.myConfig.getRootElement(), "Id", selectedTemplate);
         QueryTemplateEngine myEngine = new QueryTemplateEngine(IncludedList, ExcludedList, templateElement, Global.myOntology.getDf(), Global.myOntology.getOntologyIRI(), Global.myOntology.getReasoner());
-        Collection resultCollection = myEngine.getQueryResults();
-        
+        Collection<OWLClass> resultCollection = myEngine.getQueryResults();
+
         //--------------Check Whether the result class is expect to appear or not?---------
         //------------- Using the configuration element (DontShowResult)
-        String[] dontShowAnnotation = Global.myConfig.getDontShowResultAnnotationIRIAndValue();
-        if (dontShowAnnotation != null) {
-            
-            OWLLiteral val = null;
-      
-           for(int k=0;k<resultCollection.size();k++){
-                OWLClass cl = (OWLClass) resultCollection.toArray()[k];
-                IRI annotationIRI = IRI.create(dontShowAnnotation[0]);       
-                for (OWLAnnotation ann : cl.getAnnotations(Global.myOntology.getOntology(), Global.myOntology.getDf().getOWLAnnotationProperty(annotationIRI))) {
-                    val = (OWLLiteral) ann.getValue();
-                    if (val.getLiteral().equals(dontShowAnnotation[1])) {
-                        resultCollection.remove(cl);
+       /* String[] dontShowAnnotation = Global.myConfig.getDontShowResultAnnotationIRIAndValue();
+
+         if (dontShowAnnotation != null) {
+         OWLLiteral val = null;
+         Collection<OWLClass> toBeRemoved = new ArrayList<OWLClass>();
+
+         for (Iterator<OWLClass> it = resultCollection.iterator(); it.hasNext();) {
+         OWLClass cl = it.next();
+         IRI annotationIRI = IRI.create(dontShowAnnotation[0]);
+         for (OWLAnnotation ann : cl.getAnnotations(Global.myOntology.getOntology(), Global.myOntology.getDf().getOWLAnnotationProperty(annotationIRI))) {
+         val = (OWLLiteral) ann.getValue();
+         if (val.getLiteral().equals(dontShowAnnotation[1])) {
+         toBeRemoved.add(cl);
+
+         //resultCollection.remove(cl);
+
+         break;
+         }
+         }
+         }
+         resultCollection.removeAll(toBeRemoved);
+         }*/
+
+        ArrayList<IRI> dontShowClasses = Global.myConfig.getExcludedClassesFromResults();
+        if (dontShowClasses != null) {
+
+            Collection<OWLClass> toBeRemoved = new ArrayList<OWLClass>();
+
+            for (Iterator<OWLClass> it = resultCollection.iterator(); it.hasNext();) {
+                OWLClass cl = it.next();
+
+                for (int j = 0; j < dontShowClasses.size(); j++) {
+                    if (dontShowClasses.get(j).equals(cl.getIRI())) {
+                        toBeRemoved.add(cl);
                         break;
                     }
-
                 }
             }
-
+           resultCollection.removeAll(toBeRemoved);
         }
+        //-------------------------------------------------------------------------------
         this.noOfResultsLabel.setText("Results (" + resultCollection.size() + ")");
     }
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -753,12 +804,6 @@ public class QueryInterface extends javax.swing.JFrame {
 
                 arr[i][1] = c.toString();
 
-                //  JCheckBox cb = new JCheckBox();
-
-
-                // cb.setName(expr.toString());
-                // cb.setText(className);
-                // checkboxes[i] = cb;
             }
 
             Arrays.sort(arr, new ColumnComparator(0));
@@ -816,8 +861,10 @@ public class QueryInterface extends javax.swing.JFrame {
                 combo.setName(prop.toString());
                 combo.setRenderer(
                         new OWLClassListCellRenderer(selectedLanguage));
-                newPanel.add(combo);
-                listOfPanels[i] = newPanel;
+                if (combo.getItemCount() > 1) {
+                    newPanel.add(combo);
+                    listOfPanels[i] = newPanel;
+                }
             }
 
 
@@ -845,68 +892,7 @@ public class QueryInterface extends javax.swing.JFrame {
                     }
                 }
             }
-            /*   for(int k=0;k<num;k++)
-             {
-             JCheckBox cb = new JCheckBox();
 
-             cb.setName(arr[k][0]);
-             cb.setText(arr[k][1]);
-             checkboxes[k] = cb;
-             }
-           
-         
-             String message = "Do you want to specify further characteristics for the " + currentClassName + " ?";
-             Object[] params = {message, checkboxes};
-             int n = JOptionPane.showConfirmDialog(this, params, "Further characteristics", JOptionPane.YES_NO_OPTION);
-
-
-             Set<OWLClassExpression> selectedClasses = new HashSet<OWLClassExpression>();
-             if (n == 0) { //yes?
-
-             boolean atLeastOneIsSelected = false;
-             for (int k = 0; k < checkboxes.length; k++) {
-             if (checkboxes[k].isSelected()) {
-
-             atLeastOneIsSelected = true;
-             String str = checkboxes[k].getName().toString();
-
-             //get the class
-             String myClassStr = str.substring(str.lastIndexOf("<") + 1, str.lastIndexOf(">"));
-             IRI classIRI = IRI.create(myClassStr);
-             OWLClass myClass = Global.myOntology.getDf().getOWLClass(classIRI);
-
-             //get the property
-             String myPropertyStr = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
-             IRI propertyIRI = IRI.create(myPropertyStr);
-             OWLObjectProperty myProperty = Global.myOntology.getDf().getOWLObjectProperty(propertyIRI);
-
-
-
-
-             // add the descriptions   e.g (hasCuttingStyle some sliced)
-             selectedClasses.add(Global.myOntology.getDf().getOWLObjectSomeValuesFrom(myProperty, myClass));
-
-             }
-             }
-
-             if (atLeastOneIsSelected) {
-             // add the ingredient (e.g salmon)
-             selectedClasses.add(cls);
-             OWLClassExpression resultExpr = Global.myOntology.getDf().getOWLObjectIntersectionOf(selectedClasses);
-
-             if (type.equalsIgnoreCase("included")) {
-             IncludedList.remove(IncludedList.getSize() - 1);
-             IncludedList.addElement(resultExpr);
-             } else {
-             ExcludedList.remove(ExcludedList.getSize() - 1);
-             ExcludedList.addElement(resultExpr);
-             }
-             }
-
-
-
-             }
-             */
         }
 
 
@@ -920,6 +906,8 @@ public class QueryInterface extends javax.swing.JFrame {
                 ExcludedList.remove(jList2.getSelectedIndex());
                 jList2.revalidate();
                 jList2.repaint();
+
+
             }
         }
     }//GEN-LAST:event_excludedRemoveKeyActionPerformed
@@ -953,8 +941,8 @@ public class QueryInterface extends javax.swing.JFrame {
             return label;
         }
     }
-    // public static void main(String[] args) {
-    //}
+// public static void main(String[] args) {
+//}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JPanel BrowsingPanel;
     public javax.swing.JPanel ChooserPanel;
@@ -977,8 +965,10 @@ public class QueryInterface extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
     public javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JPanel languagePanel;
     public javax.swing.JPanel mainPanel;

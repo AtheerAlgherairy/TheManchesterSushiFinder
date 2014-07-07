@@ -2,7 +2,7 @@
 
 <FinderConfiguration>
     <OntologyLocation url="sushi_9223429_atheer.owl"/>
-    <IngredientClass name="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SushiIngredient"/>
+    <IngredientClass class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SushiIngredient"/>
     
     <AvailableLanguages>
         <language name="default"/>
@@ -36,7 +36,7 @@
    </IngredientsFacets>
    
    
-    <ResultsAnnotationProperty name="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#description"/>
+    <ResultsAnnotationProperty property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#description"/>
     <!-- http://www.w3.org/2000/01/rdf-schema#comment -->
     <ResultsCharacteristics>
         <ResultsCharacteristic  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SpicySushi" url="/spicyIcon.jpg"/>
@@ -47,8 +47,31 @@
         <ResultsCharacteristic  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#LowCaloriesPlatter" url="/lowCalIcon.jpg" />   
     </ResultsCharacteristics> 
     
+    
+    <!-- 1# In the results, dont show classes that have the following annotation property with the specified value-->
     <DontShowResult annotationIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#dontShow" value="true"/>
-
+    
+    <!-- 2# In the results, dont show the following classes -->
+    <DontShow>
+        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SpicySushi" />
+        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SweetSushi" />
+        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#NutsFreeSushi" />
+        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SushiWithNuts"/>
+        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#VeganSushi"/>
+        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SushiWithRawMeat"/>
+        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SushiWithCookedMeat"/>
+        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#VegetarianSushi" />
+        
+        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SpicyPlatter" />
+        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#HighCaloriesPlatter" />
+        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#VegetarianPlatter" />
+        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#VeganPlatter"/>
+        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#LowCaloriesPlatter"/>
+        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#NutsFreePlatter"/>
+    </DontShow>
+        
+    <!-- ########################################################### -->
+    
     <QueryTemplates>
         
         <SimpleTemplate Id="ID1" name="Sushi" show="yes">
