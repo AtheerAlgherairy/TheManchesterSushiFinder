@@ -1041,7 +1041,7 @@ public class NewConfigurationFileDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    ArrayList<String> availableLanguages(OntologyClass myOntology) {
+    public ArrayList<String> availableLanguages(OntologyClass myOntology) {
 
         OWLLiteral val = null;
 

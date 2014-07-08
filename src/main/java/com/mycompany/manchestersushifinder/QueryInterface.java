@@ -45,10 +45,8 @@ import javax.swing.event.ListDataListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
-import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.w3c.dom.Element;
 
@@ -415,7 +413,7 @@ public class QueryInterface extends javax.swing.JFrame {
         IncludedPanelLayout.setHorizontalGroup(
             IncludedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, IncludedPanelLayout.createSequentialGroup()
-                .addContainerGap(22, Short.MAX_VALUE)
+                .addContainerGap(18, Short.MAX_VALUE)
                 .addGroup(IncludedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(includedRemoveKey)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 444, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -457,7 +455,7 @@ public class QueryInterface extends javax.swing.JFrame {
         ExcludedPanelLayout.setHorizontalGroup(
             ExcludedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ExcludedPanelLayout.createSequentialGroup()
-                .addContainerGap(22, Short.MAX_VALUE)
+                .addContainerGap(18, Short.MAX_VALUE)
                 .addGroup(ExcludedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(excludedRemoveKey)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 444, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -539,7 +537,7 @@ public class QueryInterface extends javax.swing.JFrame {
                     .addComponent(ContentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(ChooserPanelLayout.createSequentialGroup()
                         .addComponent(FooterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 4, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         ChooserPanelLayout.setVerticalGroup(
@@ -565,6 +563,11 @@ public class QueryInterface extends javax.swing.JFrame {
         jMenu2.add(jMenuItem3);
 
         jMenuItem4.setText("Modify Configuration File");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem4);
 
         jMenuItem2.setText("Select Configuration File");
@@ -596,7 +599,7 @@ public class QueryInterface extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(HeaderPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 18, Short.MAX_VALUE))
+                        .addGap(0, 13, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(20, 20, 20)
                         .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
@@ -628,29 +631,29 @@ public class QueryInterface extends javax.swing.JFrame {
         //------------- Using the configuration element (DontShowResult)
        /* String[] dontShowAnnotation = Global.myConfig.getDontShowResultAnnotationIRIAndValue();
 
-        if (dontShowAnnotation != null) {
+         if (dontShowAnnotation != null) {
 
-            OWLLiteral val = null;
-            Collection<OWLClass> toBeRemoved = new ArrayList<OWLClass>();
+         OWLLiteral val = null;
+         Collection<OWLClass> toBeRemoved = new ArrayList<OWLClass>();
 
-            for (Iterator<OWLClass> it = resultCollection.iterator(); it.hasNext();) {
-                OWLClass cl = it.next();
-                IRI annotationIRI = IRI.create(dontShowAnnotation[0]);
-                for (OWLAnnotation ann : cl.getAnnotations(Global.myOntology.getOntology(), Global.myOntology.getDf().getOWLAnnotationProperty(annotationIRI))) {
-                    val = (OWLLiteral) ann.getValue();
-                    if (val.getLiteral().equals(dontShowAnnotation[1])) {
-                        toBeRemoved.add(cl);
+         for (Iterator<OWLClass> it = resultCollection.iterator(); it.hasNext();) {
+         OWLClass cl = it.next();
+         IRI annotationIRI = IRI.create(dontShowAnnotation[0]);
+         for (OWLAnnotation ann : cl.getAnnotations(Global.myOntology.getOntology(), Global.myOntology.getDf().getOWLAnnotationProperty(annotationIRI))) {
+         val = (OWLLiteral) ann.getValue();
+         if (val.getLiteral().equals(dontShowAnnotation[1])) {
+         toBeRemoved.add(cl);
 
                       
 
-                        break;
-                    }
-                }
+         break;
+         }
+         }
 
-            }
+         }
 
-            resultCollection.removeAll(toBeRemoved);
-        } */
+         resultCollection.removeAll(toBeRemoved);
+         } */
 
 
         ArrayList<IRI> dontShowClasses = Global.myConfig.getExcludedClassesFromResults();
@@ -668,7 +671,7 @@ public class QueryInterface extends javax.swing.JFrame {
                     }
                 }
             }
-           resultCollection.removeAll(toBeRemoved);
+            resultCollection.removeAll(toBeRemoved);
         }
 
         //---------------------------------------------------------
@@ -743,7 +746,7 @@ public class QueryInterface extends javax.swing.JFrame {
                     }
                 }
             }
-           resultCollection.removeAll(toBeRemoved);
+            resultCollection.removeAll(toBeRemoved);
         }
         //-------------------------------------------------------------------------------
         this.noOfResultsLabel.setText("Results (" + resultCollection.size() + ")");
@@ -766,7 +769,7 @@ public class QueryInterface extends javax.swing.JFrame {
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
 
-        SelectConfigurationFileDialog selectDoalog = new SelectConfigurationFileDialog(this, false);
+        SelectConfigurationFileDialog selectDoalog = new SelectConfigurationFileDialog(this, false, true);
         selectDoalog.setVisible(true);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
@@ -911,6 +914,14 @@ public class QueryInterface extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_excludedRemoveKeyActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        SelectConfigurationFileDialog selectDoalog = new SelectConfigurationFileDialog(this, false, false);
+        selectDoalog.setVisible(true);
+
+
+
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     /**
      * @param args the command line arguments

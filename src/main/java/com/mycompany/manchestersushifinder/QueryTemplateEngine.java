@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
-import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.ListModel;
@@ -31,76 +30,75 @@ import org.w3c.dom.NodeList;
 public class QueryTemplateEngine {
 
     ListModel IncludedList;
-    ListModel ExcludedList; 
+    ListModel ExcludedList;
     Element tempElement;
     OWLDataFactory df;
     IRI ontologyIRI;
     Boolean satisfiable;
     OWLReasoner reasoner;
 
-    public QueryTemplateEngine(ListModel IncludedList, ListModel ExcludedList, Element tempElement, OWLDataFactory df, IRI ontologyIRI,OWLReasoner reasoner) {
+    public QueryTemplateEngine(ListModel IncludedList, ListModel ExcludedList, Element tempElement, OWLDataFactory df, IRI ontologyIRI, OWLReasoner reasoner) {
         this.IncludedList = IncludedList;
         this.ExcludedList = ExcludedList;
         this.tempElement = tempElement;
         this.df = df;
         this.ontologyIRI = ontologyIRI;
-     
-        this.reasoner=reasoner;
-    }
-    
-   public QueryTemplateEngine(OWLDataFactory df, IRI ontologyIRI,OWLReasoner reasoner) {
-        this.df = df;
-        this.ontologyIRI = ontologyIRI;
-        this.reasoner=reasoner;
+
+        this.reasoner = reasoner;
     }
 
-      public Boolean getSatisfiable() {
+    public QueryTemplateEngine(OWLDataFactory df, IRI ontologyIRI, OWLReasoner reasoner) {
+        this.df = df;
+        this.ontologyIRI = ontologyIRI;
+        this.reasoner = reasoner;
+    }
+
+    public Boolean getSatisfiable() {
         return satisfiable;
     }
 
     public Collection getQueryResults() {
-          Set<OWLClassExpression> includedThings = new TreeSet<OWLClassExpression>();
-          Set<OWLClassExpression> excludedThings = new TreeSet<OWLClassExpression>();
-          
-        //fill the sets from lists
-        fillSets(includedThings,IncludedList);
-        fillSets(excludedThings,ExcludedList);
-        
-        OWLClassExpression expr = null;
-        
-        try{
-        if (checkTemplate(tempElement)) {
-            expr = getResultedClassExprForSimpleTemplate(tempElement, includedThings, excludedThings, df, ontologyIRI);
-        } //6- check if the query type is complex one (base,property,refernce to other template)
-        //call (getResultedClassExprForComplexTemplate) function to construct the class expression
-        else {
-            expr = getResultedClassExprForComplexTemplate(tempElement, includedThings, excludedThings, df, ontologyIRI);
+        Set<OWLClassExpression> includedThings = new TreeSet<OWLClassExpression>();
+        Set<OWLClassExpression> excludedThings = new TreeSet<OWLClassExpression>();
 
-        }
-        }catch(Exception e)
-        {
-            JOptionPane pane = new JOptionPane("The tool is not configured properly..\nQuery templates are not found\n"
-                 , JOptionPane.ERROR_MESSAGE);
-             JDialog dialog = pane.createDialog("Query Error");
-                dialog.setAlwaysOnTop(true);
+        //fill the sets from lists
+        fillSets(includedThings, IncludedList);
+        fillSets(excludedThings, ExcludedList);
+
+        OWLClassExpression expr = null;
+
+        try {
+            if (checkTemplate(tempElement)) {
+                expr = getResultedClassExprForSimpleTemplate(tempElement, includedThings, excludedThings, df, ontologyIRI);
+            } //6- check if the query type is complex one (base,property,refernce to other template)
+            //call (getResultedClassExprForComplexTemplate) function to construct the class expression
+            else {
+                expr = getResultedClassExprForComplexTemplate(tempElement, includedThings, excludedThings, df, ontologyIRI);
+
+            }
+        } catch (Exception e) {
+            JOptionPane pane = new JOptionPane("The tool is not configured properly..\nQuery templates are not found\n", JOptionPane.ERROR_MESSAGE);
+            JDialog dialog = pane.createDialog("Query Error");
+            dialog.setAlwaysOnTop(true);
             dialog.setVisible(true);
 
         }
-       
+
         //----------Check satisfiablity--------
-         if(reasoner.isSatisfiable(expr))
-            satisfiable=true;
-        else
-            satisfiable=false;
-         //-----------------------------------
-   
-     
-          return onlySatisfiableClasses(reasoner.getSubClasses(expr, false));
-  
- 
-       
+        if (reasoner.isSatisfiable(expr)) {
+            satisfiable = true;
+        } else {
+            satisfiable = false;
+        }
+        //-----------------------------------
+
+
+        return onlySatisfiableClasses(reasoner.getSubClasses(expr, false));
+
+
+
     }
-    
+
     public Boolean isSubClassOf(OWLClassExpression class1, OWLClass class2) {
         Boolean result = false;
         for (OWLClass c : onlySatisfiableClasses(reasoner.getSubClasses(class1, false))) {
@@ -111,7 +109,7 @@ public class QueryTemplateEngine {
         }
         return result;
     }
-    
+
     public Set<OWLClass> onlySatisfiableClasses(NodeSet<OWLClass> set) {
         Set<OWLClass> result = new TreeSet<OWLClass>();
         for (OWLClass cls : set.getFlattened()) {
@@ -121,77 +119,71 @@ public class QueryTemplateEngine {
         }
         return result;
     }
-    
 
-       
-    private void fillSets(Set<OWLClassExpression> setOfClassExpressions,ListModel list )
-    {
-            
-        for(int i=0;i<list.getSize();i++)
-        {
+    private void fillSets(Set<OWLClassExpression> setOfClassExpressions, ListModel list) {
+
+        for (int i = 0; i < list.getSize(); i++) {
             //---------------------------------
             OWLClassExpression resultExpr;
-            String str=list.getElementAt(i).toString();
-            
-             if (str.contains("ObjectIntersectionOf") || str.contains("ObjectSomeValuesFrom")) {
+            String str = list.getElementAt(i).toString();
 
-                 Set<OWLClassExpression> selectedClasses = new HashSet<OWLClassExpression>();
-           
-            int startPosition = str.indexOf("ObjectIntersectionOf(<") + 22;
-            int lastPosition = str.indexOf(">");
-            String ingredientClass = str.substring(startPosition, lastPosition);
+            if (str.contains("ObjectIntersectionOf") || str.contains("ObjectSomeValuesFrom")) {
 
-            IRI ingredientClassIRI = IRI.create(ingredientClass);
-            OWLClass currentClass = Global.myOntology.getDf().getOWLClass(ingredientClassIRI);
-         
-              selectedClasses.add(currentClass);
-                   
+                Set<OWLClassExpression> selectedClasses = new HashSet<OWLClassExpression>();
 
-            //-----------------------------------------
-            startPosition += ingredientClass.length();
-            lastPosition = str.lastIndexOf(")");
-            String newString = str.substring(startPosition, lastPosition);
+                int startPosition = str.indexOf("ObjectIntersectionOf(<") + 22;
+                int lastPosition = str.indexOf(">");
+                String ingredientClass = str.substring(startPosition, lastPosition);
 
-            String[] parts = newString.split("ObjectSomeValuesFrom");
-            for (int k = 0; k < parts.length; k++) {
-                if (parts[k].length() > 2) {
-         
-                    startPosition = parts[k].indexOf("<") + 1;
-                    lastPosition = parts[k].indexOf(">");
-                    String propStr = parts[k].substring(startPosition, lastPosition);
+                IRI ingredientClassIRI = IRI.create(ingredientClass);
+                OWLClass currentClass = Global.myOntology.getDf().getOWLClass(ingredientClassIRI);
 
-                    IRI propIRI = IRI.create(propStr);
-                    OWLObjectProperty prop = Global.myOntology.getDf().getOWLObjectProperty(propIRI);
+                selectedClasses.add(currentClass);
 
-                 
-                    startPosition = parts[k].lastIndexOf("<") + 1;
-                    lastPosition = parts[k].lastIndexOf(">");
-                    String classStr = parts[k].substring(startPosition, lastPosition);
 
-                    IRI classIRI = IRI.create(classStr);
-                    OWLClass c = Global.myOntology.getDf().getOWLClass(classIRI);
-                    
-                   // add the descriptions   e.g (hasCuttingStyle some sliced)
-                  selectedClasses.add(Global.myOntology.getDf().getOWLObjectSomeValuesFrom(prop, c));
+                //-----------------------------------------
+                startPosition += ingredientClass.length();
+                lastPosition = str.lastIndexOf(")");
+                String newString = str.substring(startPosition, lastPosition);
 
+                String[] parts = newString.split("ObjectSomeValuesFrom");
+                for (int k = 0; k < parts.length; k++) {
+                    if (parts[k].length() > 2) {
+
+                        startPosition = parts[k].indexOf("<") + 1;
+                        lastPosition = parts[k].indexOf(">");
+                        String propStr = parts[k].substring(startPosition, lastPosition);
+
+                        IRI propIRI = IRI.create(propStr);
+                        OWLObjectProperty prop = Global.myOntology.getDf().getOWLObjectProperty(propIRI);
+
+
+                        startPosition = parts[k].lastIndexOf("<") + 1;
+                        lastPosition = parts[k].lastIndexOf(">");
+                        String classStr = parts[k].substring(startPosition, lastPosition);
+
+                        IRI classIRI = IRI.create(classStr);
+                        OWLClass c = Global.myOntology.getDf().getOWLClass(classIRI);
+
+                        // add the descriptions   e.g (hasCuttingStyle some sliced)
+                        selectedClasses.add(Global.myOntology.getDf().getOWLObjectSomeValuesFrom(prop, c));
+
+                    }
                 }
-            }
-            
-            resultExpr= Global.myOntology.getDf().getOWLObjectIntersectionOf(selectedClasses);
-            setOfClassExpressions.add(resultExpr);
-             }
-             else
-             {
-            String str1 = str.substring(1, str.length() - 1);
-            IRI classIRI = IRI.create(str1);
 
-            OWLClass cls = Global.myOntology.getDf().getOWLClass(classIRI);
-            setOfClassExpressions.add(cls);
-             }
-            
-                
-     
-    }
+                resultExpr = Global.myOntology.getDf().getOWLObjectIntersectionOf(selectedClasses);
+                setOfClassExpressions.add(resultExpr);
+            } else {
+                String str1 = str.substring(1, str.length() - 1);
+                IRI classIRI = IRI.create(str1);
+
+                OWLClass cls = Global.myOntology.getDf().getOWLClass(classIRI);
+                setOfClassExpressions.add(cls);
+            }
+
+
+
+        }
     }
 
     //This function returns the element with attName=attValue
@@ -248,7 +240,7 @@ public class QueryTemplateEngine {
         Element baseElem = (Element) e.getElementsByTagName("BaseClass").item(0);
         Element propertyElem = (Element) e.getElementsByTagName("Property").item(0);
 
-        OWLClass baseClass = df.getOWLClass(IRI.create( baseElem.getAttribute("name")));
+        OWLClass baseClass = df.getOWLClass(IRI.create(baseElem.getAttribute("name")));
         OWLObjectProperty objProp = df.getOWLObjectProperty(IRI.create(propertyElem.getAttribute("name")));
 
         // Create a hash set to stor the baseClass and (existential restrictions)of our description
@@ -271,26 +263,23 @@ public class QueryTemplateEngine {
         OWLClassExpression resultExpr = df.getOWLObjectIntersectionOf(classes);
         return resultExpr;
     }
-    
+
     //For Faceted Search (view)
-    public Collection getIngredientsWithCharacteristics(Set<OWLClassExpression> classes)
-    {
-            classes.add(df.getOWLClass(Global.myConfig.getIngredientClass()));
-            OWLClassExpression resultExpr = df.getOWLObjectIntersectionOf(classes);
-            
-            return onlySatisfiableClasses(reasoner.getSubClasses(resultExpr, false));
+    public Collection getIngredientsWithCharacteristics(Set<OWLClassExpression> classes) {
+        classes.add(df.getOWLClass(Global.myConfig.getIngredientClass()));
+        OWLClassExpression resultExpr = df.getOWLObjectIntersectionOf(classes);
+
+        return onlySatisfiableClasses(reasoner.getSubClasses(resultExpr, false));
     }
     //For Direct Search view
-    public Collection getAllIngredients()
-    {
-          
-            OWLClassExpression resultExpr = df.getOWLClass(Global.myConfig.getIngredientClass());
-            return onlySatisfiableClasses(reasoner.getSubClasses(resultExpr, false));
-    }
-    
-    //-------------------------------------------------
-    
 
+    public Collection getAllIngredients() {
+
+        OWLClassExpression resultExpr = df.getOWLClass(Global.myConfig.getIngredientClass());
+        return onlySatisfiableClasses(reasoner.getSubClasses(resultExpr, false));
+    }
+
+    //-------------------------------------------------
     public static OWLClassExpression getResultedClassExprForComplexTemplate(Element e, Set<OWLClassExpression> includedThings, Set<OWLClassExpression> excludedThings, OWLDataFactory df, IRI ontologyIRI) {
         Element baseElem = (Element) e.getElementsByTagName("BaseClass").item(0);
         Element propertyElem = (Element) e.getElementsByTagName("Property").item(0);
@@ -361,6 +350,4 @@ public class QueryTemplateEngine {
 
 
     }
-
-    
 }
