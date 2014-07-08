@@ -22,13 +22,24 @@ import org.apache.xmlbeans.XmlException;
 public class SelectConfigurationFileDialog extends javax.swing.JDialog {
 
     JFileChooser fileChooser = new JFileChooser();
+    File fXmlFile;
+    boolean status; //True = select file to be used by the application
+    //False =select file to be modified 
 
     /**
      * Creates new form SelectConfigurationFileDialog
      */
-    public SelectConfigurationFileDialog(java.awt.Frame parent, boolean modal) {
+    public SelectConfigurationFileDialog(java.awt.Frame parent, boolean modal, boolean status) {
         super(parent, modal);
         initComponents();
+        this.status = status;
+
+        if (status) //set the text of the label
+        {
+            jLabel1.setText("Select configuration file to be used:");
+        } else {
+            jLabel1.setText("Select configuration file to be modified:");
+        }
     }
 
     /**
@@ -47,8 +58,6 @@ public class SelectConfigurationFileDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Select Configuration File");
-
-        jLabel1.setText("Select configuration file to be used:");
 
         uploadLogoButton.setText("Browse");
         uploadLogoButton.addActionListener(new java.awt.event.ActionListener() {
@@ -125,42 +134,44 @@ public class SelectConfigurationFileDialog extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-        if (fileChooser.getSelectedFile()!=null)
-        {
-        //check if this is a valid xml file.
-        File fXmlFile = new File(fileChooser.getSelectedFile().getPath().toString());
-        FinderConfigurationDocument doc = null;
-        try {
-            doc = FinderConfigurationDocument.Factory.parse(fXmlFile);
-        } catch (XmlException ex) {
-           Logger.getLogger(SelectConfigurationFileDialog.class.getName()).log(Level.SEVERE, null, ex);
-           
-        } catch (IOException ex) {
-            Logger.getLogger(SelectConfigurationFileDialog.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        if (fileChooser.getSelectedFile() != null) {
+            //check if this is a valid xml file.
+            fXmlFile = new File(fileChooser.getSelectedFile().getPath().toString());
+            FinderConfigurationDocument doc = null;
+            try {
+                doc = FinderConfigurationDocument.Factory.parse(fXmlFile);
+            } catch (XmlException ex) {
+                Logger.getLogger(SelectConfigurationFileDialog.class.getName()).log(Level.SEVERE, null, ex);
 
-        if (doc !=null && doc.validate()) {
-            Global.useDefault = false;
-            Global.configFileURL = fileChooser.getSelectedFile().getPath().toString();
-            StartFrame.qframe.dispose();
-            StartFrame newFrame = new StartFrame();
-            newFrame.setVisible(true);
-            this.dispose();
+            } catch (IOException ex) {
+                Logger.getLogger(SelectConfigurationFileDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            if (doc != null && doc.validate()) {
+                if (status) {
+                    Global.useDefault = false;
+                    Global.configFileURL = fileChooser.getSelectedFile().getPath().toString();
+                    StartFrame.qframe.dispose();
+                    StartFrame newFrame = new StartFrame();
+                    newFrame.setVisible(true);
+                    this.dispose();
+                } else {
+                    this.dispose();
+                    ModifyConfigurationFileDialog newDoalog = new ModifyConfigurationFileDialog(this, false, fXmlFile);
+                    newDoalog.setVisible(true);
+                }
+
+            } else {
+                JOptionPane.showMessageDialog(this, "Sorry.. Cannot use this file.\n[Details: It is not valid against the schema]", "XML File Error", JOptionPane.ERROR_MESSAGE);
+            }
         } else {
-            JOptionPane.showMessageDialog(this, "Sorry.. Cannot use this file.\n[Details: It is not valid against the schema]", "XML File Error", JOptionPane.ERROR_MESSAGE);
-        }
-        }
-        else
-        {
             JOptionPane.showMessageDialog(this, "Please select a file.\n", "Error", JOptionPane.ERROR_MESSAGE);
-            
+
         }
     }//GEN-LAST:event_jButton1ActionPerformed
-
     /**
      * @param args the command line arguments
      */
-  
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField configURL;
     private javax.swing.JButton jButton1;
