@@ -4,19 +4,21 @@
  */
 package com.mycompany.manchestersushifinder;
 
-import static com.mycompany.manchestersushifinder.NewConfigurationFileDialog.ontologyIsUploaded;
-import static com.mycompany.manchestersushifinder.NewConfigurationFileDialog.templateIDCount;
-import noNamespace.FinderConfigurationDocument.FinderConfiguration.AvailableLanguages;
+import static com.mycompany.manchestersushifinder.NewConfigurationFileDialog.ontologyLocation;
+import java.awt.Color;
 import noNamespace.FinderConfigurationDocument.FinderConfiguration.AvailableLanguages.Language;
-import noNamespace.FinderConfigurationDocument.FinderConfiguration.QueryTemplates;
+import noNamespace.FinderConfigurationDocument.FinderConfiguration.Sanctions.Sanction;
 import noNamespace.ComplexTemplate;
 import noNamespace.SimpleTemplate;
+import noNamespace.FinderConfigurationDocument.FinderConfiguration.ResultsCharacteristics.ResultsCharacteristic;
 import noNamespace.FinderConfigurationDocument.FinderConfiguration.IngredientsClassifications.Classification;
 import noNamespace.FinderConfigurationDocument.FinderConfiguration.IngredientsFacets.Facet;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -25,6 +27,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -34,9 +38,13 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -45,13 +53,16 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import noNamespace.FinderConfigurationDocument;
 import org.apache.xmlbeans.XmlException;
+import org.apache.xmlbeans.XmlOptions;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
@@ -66,10 +77,13 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
 public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
 
     File fXmlFile;
+     JList list;
     FinderConfigurationDocument doc;
-    OntologyClass myOntology;
+    public static OntologyClass myOntologyClass;
     DefaultListModel myClassificationModel;
     DefaultListModel myFacetsPropModel;
+    DefaultListModel myIconsModel;
+    DefaultListModel mySanctionsModel;
     ArrayList<String[]> templates = new ArrayList<String[]>();
     static String IngredientClassIRIVariable;
     static boolean myOntologyIsUploaded = false;
@@ -115,7 +129,6 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
         //===================================
         myFacetsPropModel = new DefaultListModel();
         facetsPropList.setModel(myFacetsPropModel);
-
         facetsPropList.setCellRenderer(myRenderer);
         facetsPropList.addKeyListener(new KeyListener() {
             @Override
@@ -140,7 +153,59 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
             }
         });
         //===================================
+        myIconsModel = new DefaultListModel();
+        resultsIconsList.setModel(myIconsModel);
+       resultsIconsList.setCellRenderer(new ImageListCellRenderer());
+        resultsIconsList.addKeyListener(new KeyListener() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    if (myIconsModel.getSize() != 0) {
+                        if (resultsIconsList.getSelectedIndex() != -1) {
+                            myIconsModel.remove(resultsIconsList.getSelectedIndex());
+                            resultsIconsList.revalidate();
+                            resultsIconsList.repaint();
+                        }
+                    }
+                }
+            }
 
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+        });
+
+        //====================================
+        mySanctionsModel=new DefaultListModel();
+        sanctionsList.setModel(mySanctionsModel);
+        sanctionsList.setCellRenderer(new SanctionsListCellRenderer());
+        sanctionsList.addKeyListener(new KeyListener() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    if (mySanctionsModel.getSize() != 0) {
+                        if (sanctionsList.getSelectedIndex() != -1) {
+                            mySanctionsModel.remove(sanctionsList.getSelectedIndex());
+                            sanctionsList.revalidate();
+                            sanctionsList.repaint();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+        });
+    //================================================
         doc = null;
         try {
             doc = FinderConfigurationDocument.Factory.parse(fXmlFile);
@@ -218,9 +283,9 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
                 classRenderCombo.setSelectedIndex(i);
             }
         }
-        myOntology = new OntologyClass(ontologyURL.getText().trim(), true);
-        myOntologyIsUploaded=true;
-        fillAllCombos(myOntology);
+        myOntologyClass = new OntologyClass(ontologyURL.getText().trim(), true);
+        myOntologyIsUploaded = true;
+        fillAllCombos(myOntologyClass);
         String ingredientClass = myDoc.getFinderConfiguration().getIngredientClass().getClass1().toString();
         IngredientClassIRIVariable = ingredientClass;
         componentClassTextField.setText(IngredientClassIRIVariable);
@@ -249,9 +314,9 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
             selectedLangNames.add(langsElementsArray[k].getName().toString().trim());
         }
 
-        JList list;
+       
         ArrayList<String> langs = new ArrayList<String>();
-        langs = availableLanguages(myOntology);
+        langs = availableLanguages(myOntologyClass);
         int numOfLangs = langs.size();
 
         //If there are languages in the ontology
@@ -363,12 +428,11 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
 
                 Object item = evt.getItem();
 
-                if(cb.getSelectedIndex()==-1)
-                {
+                if (cb.getSelectedIndex() == -1) {
                     availableTemplatesCombo.removeAllItems();
-                    
-                    for(int i=0;i<templates.size();i++){
-                    availableTemplatesCombo.addItem(templates.get(i)[0] + "-" + templates.get(i)[1]);
+
+                    for (int i = 0; i < templates.size(); i++) {
+                        availableTemplatesCombo.addItem(templates.get(i)[0] + "-" + templates.get(i)[1]);
                     }
                 }
                 if (evt.getStateChange() == ItemEvent.SELECTED) {
@@ -400,7 +464,7 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
                                     }
                                 }
                                 classRadioButton.setSelected(false);
-                                
+
                                 templateRadioButton.setSelected(true);
                             }
 
@@ -419,11 +483,10 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
 
 
                         } else {
-                            
+
                             //1- Add other different templates 2- that do not refer to this current template
-                            if(!templates.get(i)[5].equalsIgnoreCase(tempID))
-                            {
-                            availableTemplatesCombo.addItem(templates.get(i)[0] + "-" + templates.get(i)[1]);
+                            if (!templates.get(i)[5].equalsIgnoreCase(tempID)) {
+                                availableTemplatesCombo.addItem(templates.get(i)[0] + "-" + templates.get(i)[1]);
                             }
 
                         }
@@ -441,7 +504,7 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
                     }
                     // Item was just selected
                 } else if (evt.getStateChange() == ItemEvent.DESELECTED) {
-                    
+
                     templateNameText.setText("");
                     showCheckBox.setSelected(false);
                     templateRadioButton.setSelected(false);
@@ -455,6 +518,53 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
             }
         };
         templatesCombo.addItemListener(itemListener);
+
+        //===================5-Results===========================
+
+
+        if (myDoc.getFinderConfiguration().getResultsCharacteristics() != null) {
+            ResultsCharacteristic[] resultsCharacteristicElementsArray = myDoc.getFinderConfiguration().getResultsCharacteristics().getResultsCharacteristicArray();
+            for (int k = 0; k < resultsCharacteristicElementsArray.length; k++) {
+                String classIRI = resultsCharacteristicElementsArray[k].getClass1().toString().trim();
+                String iconURLString = resultsCharacteristicElementsArray[k].getUrl().toString().trim();
+
+                URL iconURL = null;
+                try {
+                    //Get the image
+                    iconURL = new URL(iconURLString);
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(ModifyConfigurationFileDialog.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                Icon iconImage = new ImageIcon(iconURL);
+                // add the image to jlabel with text
+                JLabel myLabel = new JLabel(classIRI, iconImage, JLabel.LEFT);
+
+                //add the label to the panel
+                JPanel myPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                myPanel.add(myLabel);
+
+                //Add the panel to the list model
+                myIconsModel.addElement(myPanel);
+
+
+            }
+        }
+        
+        //================================6 Sanctions ===========================
+        
+        if (myDoc.getFinderConfiguration().getSanctions()!= null) {
+            Sanction[] sanctionElementsArray = myDoc.getFinderConfiguration().getSanctions().getSanctionArray();
+           for (int k = 0; k < sanctionElementsArray.length; k++) {
+                
+                String classD = sanctionElementsArray[k].getClassD().toString().trim();
+                String classC = sanctionElementsArray[k].getClassC().toString().trim();
+                String property=sanctionElementsArray[k].getProperty().toString().trim();
+
+                mySanctionsModel.addElement(classC+","+property+","+classD);
+
+
+            }
+        } 
 
 
     }
@@ -598,17 +708,25 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
         templateNameText = new javax.swing.JTextField();
         showCheckBox = new javax.swing.JCheckBox();
         jLabel17 = new javax.swing.JLabel();
-        updateTemplateInfo = new javax.swing.JButton();
+        saveTemplateInfo = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         FourthTabPanel = new javax.swing.JPanel();
         ResultsPanel = new javax.swing.JPanel();
         resultsIconPanel = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        resultsIconsList = new javax.swing.JList();
+        addIconButton = new javax.swing.JButton();
+        removeIconButton = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
         annoPropertiesCombo = new javax.swing.JComboBox();
         FifthTabPanel = new javax.swing.JPanel();
         SanctionsPanel = new javax.swing.JPanel();
-        saveAsButton = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        sanctionsList = new javax.swing.JList();
+        addSanctionButton = new javax.swing.JButton();
+        removeSanctionButton = new javax.swing.JButton();
+        saveButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("New configuration file");
@@ -960,7 +1078,7 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
 
         QueryTemplatePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Query Templates"));
 
-        jLabel2.setText("Available Templates:");
+        jLabel2.setText("Current Templates:");
 
         templatesCombo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -977,7 +1095,7 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
             }
         });
 
-        templateRadioButton.setText("Query Template");
+        templateRadioButton.setText("Or Other Template");
         templateRadioButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 templateRadioButtonActionPerformed(evt);
@@ -1082,10 +1200,11 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
                 .addContainerGap(11, Short.MAX_VALUE))
         );
 
-        updateTemplateInfo.setText("Update Template Info");
-        updateTemplateInfo.addActionListener(new java.awt.event.ActionListener() {
+        saveTemplateInfo.setText("Save New Template");
+        saveTemplateInfo.setEnabled(false);
+        saveTemplateInfo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateTemplateInfoActionPerformed(evt);
+                saveTemplateInfoActionPerformed(evt);
             }
         });
 
@@ -1119,8 +1238,8 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(QueryTemplatePanelLayout.createSequentialGroup()
                 .addGroup(QueryTemplatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(updateTemplateInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(saveTemplateInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 30, Short.MAX_VALUE))
         );
         QueryTemplatePanelLayout.setVerticalGroup(
@@ -1136,7 +1255,7 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(updateTemplateInfo))
+                .addComponent(saveTemplateInfo))
         );
 
         QueryTemplatePanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jLabel2, templatesCombo});
@@ -1164,18 +1283,55 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
 
         ResultsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Results icons and descriptions"));
 
-        resultsIconPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Icons"));
+        resultsIconPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Results Icons"));
+
+        resultsIconsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        jScrollPane3.setViewportView(resultsIconsList);
+
+        addIconButton.setText("Add");
+        addIconButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addIconButtonActionPerformed(evt);
+            }
+        });
+
+        removeIconButton.setText("Remove");
+        removeIconButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeIconButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout resultsIconPanelLayout = new javax.swing.GroupLayout(resultsIconPanel);
         resultsIconPanel.setLayout(resultsIconPanelLayout);
         resultsIconPanelLayout.setHorizontalGroup(
             resultsIconPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 764, Short.MAX_VALUE)
+            .addGroup(resultsIconPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 648, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(resultsIconPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(addIconButton)
+                    .addComponent(removeIconButton))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
+
+        resultsIconPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {addIconButton, removeIconButton});
+
         resultsIconPanelLayout.setVerticalGroup(
             resultsIconPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 79, Short.MAX_VALUE)
+            .addGroup(resultsIconPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(resultsIconPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(resultsIconPanelLayout.createSequentialGroup()
+                        .addComponent(addIconButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(removeIconButton))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
+
+        resultsIconPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {addIconButton, removeIconButton});
 
         jLabel8.setText("Description annotation property");
 
@@ -1209,7 +1365,7 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
                     .addComponent(annoPropertiesCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(resultsIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(40, 40, 40))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout FourthTabPanelLayout = new javax.swing.GroupLayout(FourthTabPanel);
@@ -1226,28 +1382,66 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
             .addGroup(FourthTabPanelLayout.createSequentialGroup()
                 .addGap(29, 29, 29)
                 .addComponent(ResultsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(155, Short.MAX_VALUE))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Results", FourthTabPanel);
 
         SanctionsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Santions Assertions"));
 
+        sanctionsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        jScrollPane4.setViewportView(sanctionsList);
+
+        addSanctionButton.setText("Add");
+        addSanctionButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addSanctionButtonActionPerformed(evt);
+            }
+        });
+
+        removeSanctionButton.setText("Remove");
+        removeSanctionButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeSanctionButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout SanctionsPanelLayout = new javax.swing.GroupLayout(SanctionsPanel);
         SanctionsPanel.setLayout(SanctionsPanelLayout);
         SanctionsPanelLayout.setHorizontalGroup(
             SanctionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 734, Short.MAX_VALUE)
-        );
-        SanctionsPanelLayout.setVerticalGroup(
-            SanctionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 125, Short.MAX_VALUE)
+            .addGroup(SanctionsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 591, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(SanctionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(addSanctionButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(removeSanctionButton, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE))
+                .addContainerGap(57, Short.MAX_VALUE))
         );
 
-        saveAsButton.setText("Save As");
-        saveAsButton.addActionListener(new java.awt.event.ActionListener() {
+        SanctionsPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {addSanctionButton, removeSanctionButton});
+
+        SanctionsPanelLayout.setVerticalGroup(
+            SanctionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(SanctionsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(SanctionsPanelLayout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addComponent(addSanctionButton)
+                .addGap(18, 18, 18)
+                .addComponent(removeSanctionButton)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        SanctionsPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {addSanctionButton, removeSanctionButton});
+
+        saveButton.setText("Save Changes");
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveAsButtonActionPerformed(evt);
+                saveButtonActionPerformed(evt);
             }
         });
 
@@ -1256,22 +1450,22 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
         FifthTabPanelLayout.setHorizontalGroup(
             FifthTabPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(FifthTabPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(FifthTabPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(SanctionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(FifthTabPanelLayout.createSequentialGroup()
-                        .addGap(614, 614, 614)
-                        .addComponent(saveAsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(10, 10, 10)
+                .addComponent(SanctionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(92, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, FifthTabPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(65, 65, 65))
         );
         FifthTabPanelLayout.setVerticalGroup(
             FifthTabPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(FifthTabPanelLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addComponent(SanctionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 164, Short.MAX_VALUE)
-                .addComponent(saveAsButton)
-                .addGap(47, 47, 47))
+                .addGap(56, 56, 56)
+                .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(66, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Sanctions", FifthTabPanel);
@@ -1316,9 +1510,6 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
 
     }
 
-    private void saveAsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsButtonActionPerformed
-    }//GEN-LAST:event_saveAsButtonActionPerformed
-
     private void uploadLogoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadLogoButtonActionPerformed
 
         JFileChooser fileChooser = new JFileChooser();
@@ -1340,8 +1531,6 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_uploadLogoButtonActionPerformed
 
     private void classesComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_classesComboActionPerformed
-
-   
     }//GEN-LAST:event_classesComboActionPerformed
 
     private void ontologyURLInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_ontologyURLInputMethodTextChanged
@@ -1361,7 +1550,7 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
         //Show dialog to add classification
         JComboBox combo = new JComboBox();
         DefaultListModel classesModel = new DefaultListModel();
-        for (OWLClass cls : myOntology.getOntology().getClassesInSignature()) {
+        for (OWLClass cls : myOntologyClass.getOntology().getClassesInSignature()) {
             classesModel.addElement(cls.getIRI());
 
         }
@@ -1407,7 +1596,7 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
         //Show dialog to add classification
         JComboBox combo = new JComboBox();
         DefaultListModel objectPropModel = new DefaultListModel();
-        for (OWLObjectProperty prop : myOntology.getOntology().getObjectPropertiesInSignature()) {
+        for (OWLObjectProperty prop : myOntologyClass.getOntology().getObjectPropertiesInSignature()) {
             objectPropModel.addElement(prop.getIRI());
 
         }
@@ -1489,23 +1678,23 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
 
                 if (deleteFlag) //We can safely remove the item form the combo and templates array
                 {
-                     int n = JOptionPane.showConfirmDialog(this,"Are you sure do you want to remove the selected template?", "Remove Warning", JOptionPane.YES_NO_OPTION);
-                   if(n==0) //yes?
-                   {
-                     templatesCombo.removeItemAt(templatesCombo.getSelectedIndex());
+                    int n = JOptionPane.showConfirmDialog(this, "Are you sure do you want to remove the selected template?", "Remove Warning", JOptionPane.YES_NO_OPTION);
+                    if (n == 0) //yes?
+                    {
+                        templatesCombo.removeItemAt(templatesCombo.getSelectedIndex());
 
-                    for (int i = 0; i < availableTemplatesCombo.getItemCount(); i++) {
-                        if (availableTemplatesCombo.getItemAt(i).toString().equalsIgnoreCase(item)) {
-                            availableTemplatesCombo.removeItemAt(i);
+                        for (int i = 0; i < availableTemplatesCombo.getItemCount(); i++) {
+                            if (availableTemplatesCombo.getItemAt(i).toString().equalsIgnoreCase(item)) {
+                                availableTemplatesCombo.removeItemAt(i);
+                            }
+                        }
+                        for (int i = 0; i < templates.size(); i++) {
+
+                            if (templates.get(i)[0].equalsIgnoreCase(temp)) {
+                                templates.remove(i);
+                            }
                         }
                     }
-                    for (int i = 0; i < templates.size(); i++) {
-
-                        if (templates.get(i)[0].equalsIgnoreCase(temp)) {
-                            templates.remove(i);
-                        }
-                    }
-                   }
                 } else {
 
                     JOptionPane.showMessageDialog(this, "You can't remove the selected template.\nIt is used by the following template(s):\n" + usedByTemplate, "Error", JOptionPane.ERROR_MESSAGE);
@@ -1523,39 +1712,39 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        counter=counter+1;
+        counter = counter + 1;
         templateIdTextField.setText("ID" + counter);
         templateNameText.setText("");
         showCheckBox.setSelected(true);
         baseClassCombo.setSelectedIndex(-1);
         objPropCombo.setSelectedIndex(-1);
         templatesCombo.setSelectedIndex(-1);
-        
+
         componentClassTextField.setText(IngredientClassIRIVariable);
-        
+
         availableTemplatesCombo.removeAllItems();
-        for(int i=0;i<templates.size();i++)
-        {
-            availableTemplatesCombo.addItem(templates.get(i)[0]+"-"+templates.get(i)[1]);
+        for (int i = 0; i < templates.size(); i++) {
+            availableTemplatesCombo.addItem(templates.get(i)[0] + "-" + templates.get(i)[1]);
         }
         availableTemplatesCombo.setSelectedIndex(-1);
         classRadioButton.setSelected(true);
         templateRadioButton.setSelected(false);
-        
+
+        saveTemplateInfo.setEnabled(true);
 
 
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void updateTemplateInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateTemplateInfoActionPerformed
+    private void saveTemplateInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveTemplateInfoActionPerformed
         // TODO add your handling code here:
-        
-         String baseClassIRI = null;
+
+        String baseClassIRI = null;
         String objPropIRI = null;
         String thirdPart = null;
         String templateName = null;
         String show = null;
-        String tempIDAndName=null;
-        String templateID=templateIdTextField.getText();
+        String tempIDAndName = null;
+        String templateID = templateIdTextField.getText();
 
 
         boolean flag1 = false; //temp Name
@@ -1612,8 +1801,8 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
 
             } else {
                 if (availableTemplatesCombo.getSelectedItem() != null) {
-                    
-                     tempIDAndName=availableTemplatesCombo.getSelectedItem().toString();
+
+                    tempIDAndName = availableTemplatesCombo.getSelectedItem().toString();
                     thirdPart = tempIDAndName.substring(0, tempIDAndName.indexOf("-")).trim();
                     flag6 = true;
                 } else {
@@ -1624,22 +1813,20 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
 
             if (flag1 && flag2 && flag3 && flag4 && (flag5 || flag6)) {
                 String infoMsg;
-                if(flag5)
-                {
-                 infoMsg = "\nID: [" + templateID + "]\nName: [" + templateName + "]\nShow: [" + show + "]\nBase class: [" + baseClassIRI + "]\nProperty: [" + objPropIRI + "]\nComponent class: [" + thirdPart + "]";
-                }
-                else
-                {
-                 infoMsg = "\nID: [" + templateID + "]\nName: [" + templateName + "]\nShow: [" + show + "]\nBase class: [" + baseClassIRI + "]\nProperty: [" + objPropIRI + "]\nTemplate: [" + tempIDAndName + "]";
-                    
+                if (flag5) {
+                    infoMsg = "\nID: [" + templateID + "]\nName: [" + templateName + "]\nShow: [" + show + "]\nBase class: [" + baseClassIRI + "]\nProperty: [" + objPropIRI + "]\nComponent class: [" + thirdPart + "]";
+                } else {
+                    infoMsg = "\nID: [" + templateID + "]\nName: [" + templateName + "]\nShow: [" + show + "]\nBase class: [" + baseClassIRI + "]\nProperty: [" + objPropIRI + "]\nTemplate: [" + tempIDAndName + "]";
+
                 }
                 int ans;
                 ans = JOptionPane.showConfirmDialog(this, "Are you sure you want to add the following template??\n\nTemplate Info:" + infoMsg, "Add template", JOptionPane.YES_NO_OPTION);
                 if (ans == JOptionPane.YES_OPTION) {
 
                     //------------add to available templates---------------------
-                    templatesCombo.addItem(templateID+"-"+templateName);
-  
+                    templatesCombo.addItem(templateID + "-" + templateName);
+
+                    saveTemplateInfo.setEnabled(false);
                     //templatesCombo.setSelectedIndex(-1);
                     //objPropCombo.setSelectedIndex(-1);
                     //baseClassCombo.setSelectedIndex(-1);
@@ -1663,7 +1850,528 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
         } else {
             JOptionPane.showMessageDialog(this, "You have to upload your ontology first!", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_updateTemplateInfoActionPerformed
+    }//GEN-LAST:event_saveTemplateInfoActionPerformed
+
+    private void addIconButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addIconButtonActionPerformed
+        // TODO add your handling code here:
+
+        //Show dialog to add class & file chooser for Icon URL
+        JComboBox combo = new JComboBox();
+        DefaultListModel classesModel = new DefaultListModel();
+        for (OWLClass cls : myOntologyClass.getOntology().getClassesInSignature()) {
+            classesModel.addElement(cls.getIRI());
+
+        }
+
+        classesModel = sortListModel(classesModel);
+        for (int i = 0; i < classesModel.getSize(); i++) {
+            combo.addItem(classesModel.get(i));
+        }
+        
+         JPanel classpanel=new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel classLabel=new JLabel("Class: ");
+        classpanel.add(classLabel);
+        classpanel.add(combo);
+
+        final JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Image Files", "jpg", "png", "gif", "jpeg");
+        fileChooser.setFileFilter(filter);
+        fileChooser.addChoosableFileFilter(filter);
+        fileChooser.setAcceptAllFileFilterUsed(false);
+       
+        JPanel panel=new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel myLabel=new JLabel("Icon URL");
+      
+        panel.add(myLabel);
+        final JTextField myText=new JTextField();
+      
+         myText.setMaximumSize(new Dimension(400,23));
+       myText.setMinimumSize(new Dimension(400,23));
+        myText.setPreferredSize(new Dimension(400,23));
+        myText.repaint();
+       
+        panel.add(myText);
+        
+       Action backAction = new AbstractAction("Browse") {
+            public void actionPerformed(ActionEvent e) {
+               
+              fileChooser.showOpenDialog(ModifyConfigurationFileDialog.this);
+              File file = fileChooser.getSelectedFile();
+            String URLString = null;
+            if (file != null) {
+
+                try {
+                    URLString = file.toURI().toURL().toString();
+                    myText.setText(URLString);
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(NewConfigurationFileDialog.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+                 
+            }
+
+        
+        };
+        JButton myButton=new JButton(backAction);
+       myButton.setMaximumSize(new Dimension(80,23));
+       myButton.setMinimumSize(new Dimension(80,23));
+        myButton.setPreferredSize(new Dimension(80,23));
+        myButton.repaint();
+        
+        panel.add(myButton);
+
+        String message = "Please Select class and Icon to be added:";
+        Object[] params = {message, classpanel,panel};
+        int n = JOptionPane.showConfirmDialog(this, params, "Add Result Icon", JOptionPane.OK_CANCEL_OPTION);
+
+        if (n == 0) { //yes?
+            
+            JPanel myPanel=new JPanel();
+            myPanel=(JPanel) params[1];
+            
+            JComboBox combo1 = new JComboBox();
+            combo1 = (JComboBox) myPanel.getComponent(1);
+            
+            JPanel p=new JPanel();
+            p=(JPanel) params[2];
+           
+            JTextField m=new JTextField();
+             m=(JTextField) p.getComponent(1);
+            
+             URL iconURL=null;
+            try {
+                iconURL = new URL(m.getText());
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(ModifyConfigurationFileDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
+             
+            Icon iconImage = new ImageIcon(iconURL);
+
+            JLabel label = new JLabel(combo1.getSelectedItem().toString(), iconImage, JLabel.LEFT);
+            JPanel myPanel1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            myPanel1.add(label);
+            myIconsModel.addElement(myPanel1);
+
+        }
+
+
+    }//GEN-LAST:event_addIconButtonActionPerformed
+
+    private void removeIconButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeIconButtonActionPerformed
+        // TODO add your handling code here:
+        
+         if (!myIconsModel.isEmpty()) {
+
+            if (resultsIconsList.getSelectedIndex() != -1) {
+                myIconsModel.remove(resultsIconsList.getSelectedIndex());
+                resultsIconsList.revalidate();
+                resultsIconsList.repaint();
+            }
+        }
+    }//GEN-LAST:event_removeIconButtonActionPerformed
+
+    private void removeSanctionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeSanctionButtonActionPerformed
+        // TODO add your handling code here:
+             if (!mySanctionsModel.isEmpty()) {
+
+            if (sanctionsList.getSelectedIndex() != -1) {
+                mySanctionsModel.remove(sanctionsList.getSelectedIndex());
+                sanctionsList.revalidate();
+                sanctionsList.repaint();
+            }
+        }
+        
+    }//GEN-LAST:event_removeSanctionButtonActionPerformed
+
+    private void addSanctionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addSanctionButtonActionPerformed
+        // TODO add your handling code here:
+        
+        //Show dialog to add new sanction [class c, property & class D]
+        JComboBox combo = new JComboBox();
+        DefaultListModel classesModel = new DefaultListModel();
+        for (OWLClass cls : myOntologyClass.getOntology().getClassesInSignature()) {
+            classesModel.addElement(cls.getIRI());
+        }
+        classesModel = sortListModel(classesModel);
+        for (int i = 0; i < classesModel.getSize(); i++) {
+            combo.addItem(classesModel.get(i));
+        }
+        
+        JComboBox combo2 = new JComboBox();
+        DefaultListModel popertiesModel = new DefaultListModel();
+        for (OWLObjectProperty p : myOntologyClass.getOntology().getObjectPropertiesInSignature()) {
+            popertiesModel.addElement(p.getIRI());
+        }
+        popertiesModel = sortListModel(popertiesModel);
+        for (int i = 0; i < popertiesModel.getSize(); i++) {
+            combo2.addItem(popertiesModel.get(i));
+        }
+        
+         JComboBox combo3 = new JComboBox();
+        DefaultListModel classesModel3 = new DefaultListModel();
+        for (OWLClass cls : myOntologyClass.getOntology().getClassesInSignature()) {
+            classesModel3.addElement(cls.getIRI());
+        }
+        classesModel3 = sortListModel(classesModel3);      
+        for (int i = 0; i < classesModel3.getSize(); i++) {
+            combo3.addItem(classesModel3.get(i));
+        }
+        
+         JPanel panel1=new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel myLabel=new JLabel("Class C:");
+        panel1.add(myLabel);
+        panel1.add(combo);
+        
+        JPanel panel2=new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel myLabel2=new JLabel("Property:");
+        panel2.add(myLabel2);
+        panel2.add(combo2);
+        
+         JPanel panel3=new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel myLabel3=new JLabel("Class D:");
+        panel3.add(myLabel3);
+        panel3.add(combo3);
+        
+         String message = "Please Select class C, property and class D for the new assertion:";
+        Object[] params = {message,panel1, panel2,panel3};
+        int n = JOptionPane.showConfirmDialog(this, params, "Add Sanction Assertion", JOptionPane.OK_CANCEL_OPTION);
+
+        if (n == 0) { //if OK
+            
+            JPanel p1=new JPanel();
+            p1=(JPanel) params[1];
+            JComboBox firstCombo = new JComboBox();
+            firstCombo = (JComboBox) p1.getComponent(1);
+            
+            JPanel p2=new JPanel();
+            p2=(JPanel) params[2];
+            JComboBox secondCombo = new JComboBox();
+            secondCombo = (JComboBox) p2.getComponent(1);
+            
+            JPanel p3=new JPanel();
+            p3=(JPanel) params[3];
+            JComboBox thirdCombo = new JComboBox();
+            thirdCombo = (JComboBox) p3.getComponent(1);
+            
+            mySanctionsModel.addElement(firstCombo.getSelectedItem()+","+secondCombo.getSelectedItem()+","+thirdCombo.getSelectedItem());
+            
+            
+        }
+        
+        
+        
+    }//GEN-LAST:event_addSanctionButtonActionPerformed
+
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+
+        
+        // TODO add your handling code here:
+        
+          int ans = JOptionPane.showConfirmDialog(this,"Are you sure you want to save changes?" , "Save Changes", JOptionPane.YES_NO_OPTION);
+
+        if (ans == 0) { //if OK
+     
+        if (logoURL.getText() != null) {
+            doc.getFinderConfiguration().getLogo().setURL(logoURL.getText().trim()); //get the URL
+        }
+
+       
+        if (includedListLabel.getText() != null) {
+             doc.getFinderConfiguration().getIncludedLabel().setText(includedListLabel.getText().trim());
+        }
+
+      
+        if (excludedListLabel.getText() != null) {
+             doc.getFinderConfiguration().getExcludedLabel().setText(excludedListLabel.getText().trim());
+        }
+
+       
+        if (titleLabel.getText() != null) {
+             doc.getFinderConfiguration().getTitleLabel().setText(titleLabel.getText().trim());
+        }
+
+       
+
+        if (!ontologyLocation.isEmpty()) {
+             doc.getFinderConfiguration().getOntologyLocation().setUrl(ontologyLocation);
+        }
+
+       
+        if (classesCombo.getSelectedItem() != null) {
+             doc.getFinderConfiguration().getIngredientClass().setClass1(classesCombo.getSelectedItem().toString());
+        }
+
+      
+        if (annoPropertiesCombo.getSelectedItem() != null) {
+             doc.getFinderConfiguration().getResultsAnnotationProperty().setProperty(annoPropertiesCombo.getSelectedItem().toString());
+        }
+
+     
+        //-----------remove all languages-------------
+     
+        for(int i=0;i<doc.getFinderConfiguration().getAvailableLanguages().sizeOfLanguageArray();i++)
+        {
+            if(doc.getFinderConfiguration().getAvailableLanguages().getLanguageArray(i)!=null)
+            {
+            doc.getFinderConfiguration().getAvailableLanguages().removeLanguage(i);
+            }
+            i--;
+        }
+
+        if (list != null) {
+            ArrayList<String> selectedLangs = new ArrayList<String>();
+            for (int i = 0; i < list.getModel().getSize(); i++) {
+                CheckListItem item = (CheckListItem) list.getModel().getElementAt(i);
+                if (item.isSelected()) {
+                    selectedLangs.add(item.toString());
+                }
+            }
+
+            if (!selectedLangs.isEmpty()) {
+                //if there is no languages we dont need to have "default" so we can switch back to english    
+              
+                doc.getFinderConfiguration().getAvailableLanguages().addNewLanguage().setName("default");
+                
+            }
+
+
+            for (int i = 0; i < selectedLangs.size(); i++) {
+                String value = selectedLangs.get(i).toString().trim().toLowerCase();
+                 doc.getFinderConfiguration().getAvailableLanguages().addNewLanguage().setName(value);
+            }
+        }
+
+
+
+        if (classRenderCombo.getSelectedItem() != null) {
+            doc.getFinderConfiguration().getClassRendering().setUse(classRenderCombo.getSelectedItem().toString());
+        } else {
+            doc.getFinderConfiguration().getClassRendering().setUse("IRI");
+        }
+
+       //-----result icons-----------
+         
+        for(int i=0;i<doc.getFinderConfiguration().getResultsCharacteristics().sizeOfResultsCharacteristicArray();i++)
+        {
+            if(doc.getFinderConfiguration().getResultsCharacteristics().getResultsCharacteristicArray(i)!=null)
+            {
+            doc.getFinderConfiguration().getResultsCharacteristics().removeResultsCharacteristic(i);
+            }
+            i--;
+        }
+        for (int i = 0; i < myIconsModel.size() ;i++) {
+            
+            Object object= myIconsModel.get(i);
+            JPanel panel=new JPanel();
+                    panel=(JPanel) object;
+                 JLabel label=new JLabel();
+               label=(JLabel)panel.getComponent(0);
+      
+                String value = label.getText().toString();
+                String iconURL=label.getIcon().toString();
+                ResultsCharacteristic res= doc.getFinderConfiguration().getResultsCharacteristics().addNewResultsCharacteristic();
+                res.setClass1(value);
+                res.setUrl(iconURL);
+              
+        }
+        
+        //-----Ingredients Facets-----------
+        
+        //check if there is (IngredientsFacets) element or not
+        // if yes, remove all childern 
+        if(doc.getFinderConfiguration().getIngredientsFacets()!=null)
+        {
+        for(int i=0;i<doc.getFinderConfiguration().getIngredientsFacets().sizeOfFacetArray();i++)
+        {
+            if(doc.getFinderConfiguration().getIngredientsFacets().getFacetArray(i)!=null)
+            {
+            doc.getFinderConfiguration().getIngredientsFacets().removeFacet(i);
+            }
+            i--;
+        }
+        } 
+        else //if no, create new one.
+        {
+              doc.getFinderConfiguration().addNewIngredientsFacets();
+        }
+        
+        for (int i = 0; i < myFacetsPropModel.size() ;i++) {
+            String propIRI=myFacetsPropModel.get(i).toString().substring(1, myFacetsPropModel.get(i).toString().length()-1);
+           doc.getFinderConfiguration().getIngredientsFacets().addNewFacet().setProperty(propIRI);
+        }
+        
+      //-----Ingredients Classifications-----------
+        
+        //check if there is (IngredientsClassifications) element or not
+        // if yes, remove all childern 
+        if(doc.getFinderConfiguration().getIngredientsClassifications()!=null)
+        {
+        for(int i=0;i<doc.getFinderConfiguration().getIngredientsClassifications().sizeOfClassificationArray();i++)
+        {
+            if(doc.getFinderConfiguration().getIngredientsClassifications().getClassificationArray(i)!=null)
+            {
+            doc.getFinderConfiguration().getIngredientsClassifications().removeClassification(i);
+            }
+            i--;
+        }
+        } 
+        else //if no, create new one.
+        {
+              doc.getFinderConfiguration().addNewIngredientsClassifications();
+        }
+        
+        for (int i = 0; i < myClassificationModel.size() ;i++) {
+            String classIRI=myClassificationModel.get(i).toString().substring(1, myClassificationModel.get(i).toString().length()-1);
+           doc.getFinderConfiguration().getIngredientsClassifications().addNewClassification().setClass1(classIRI);
+        }
+
+        
+        //-----------------------------------
+        //Query Template
+        
+        //Remove all complex Template
+         for(int i=0;i<doc.getFinderConfiguration().getQueryTemplates().sizeOfComplexTemplateArray();i++)
+        {
+            if(doc.getFinderConfiguration().getQueryTemplates().getComplexTemplateArray(i)!=null)
+            {
+            doc.getFinderConfiguration().getQueryTemplates().removeComplexTemplate(i);
+            }
+            i--;
+        }
+         
+        //Remove all Simple Template
+         for(int i=0;i<doc.getFinderConfiguration().getQueryTemplates().sizeOfSimpleTemplateArray();i++)
+        {
+            if(doc.getFinderConfiguration().getQueryTemplates().getSimpleTemplateArray(i)!=null)
+            {
+            doc.getFinderConfiguration().getQueryTemplates().removeSimpleTemplate(i);
+            }
+            i--;
+        }
+
+         //Add all templates..
+         
+           if (!templates.isEmpty()) {
+            for (int i = 0; i < templates.size(); i++) {
+                if (templates.get(i)[6].equalsIgnoreCase("Simple")) { //template type
+
+                    SimpleTemplate simpleTemplateElement = doc.getFinderConfiguration().getQueryTemplates().addNewSimpleTemplate();
+                    simpleTemplateElement.setId(templates.get(i)[0]); //id
+                    simpleTemplateElement.setName(templates.get(i)[1]); //name
+
+                    if (templates.get(i)[2].equalsIgnoreCase("yes")) //show
+                    {
+                        simpleTemplateElement.setShow(SimpleTemplate.Show.YES);
+                    } else {
+                        simpleTemplateElement.setShow(SimpleTemplate.Show.NO);
+                    }
+
+                    SimpleTemplate.BaseClass baseClassElement = simpleTemplateElement.addNewBaseClass();
+                    baseClassElement.setName(templates.get(i)[3]); //base IRI
+
+                    SimpleTemplate.Property propertyElement = simpleTemplateElement.addNewProperty();
+                    propertyElement.setName(templates.get(i)[4]); //property IRI
+
+                    SimpleTemplate.ComponentClass componentClassElement = simpleTemplateElement.addNewComponentClass();
+                    componentClassElement.setName(templates.get(i)[5]); //component IRI
+
+
+                } else //complex template
+                {
+                    ComplexTemplate complexTemplateElement = doc.getFinderConfiguration().getQueryTemplates().addNewComplexTemplate();
+                    complexTemplateElement.setId(templates.get(i)[0]); //id
+                    complexTemplateElement.setName(templates.get(i)[1]); //name
+
+                    if (templates.get(i)[2].equalsIgnoreCase("yes")) //show
+                    {
+                        complexTemplateElement.setShow(ComplexTemplate.Show.YES);
+                    } else {
+                        complexTemplateElement.setShow(ComplexTemplate.Show.NO);
+                    }
+
+                    ComplexTemplate.BaseClass baseClassElement = complexTemplateElement.addNewBaseClass();
+                    baseClassElement.setName(templates.get(i)[3]); //base IRI
+
+                    ComplexTemplate.Property propertyElement = complexTemplateElement.addNewProperty();
+                    propertyElement.setName(templates.get(i)[4]); //property IRI
+
+                    ComplexTemplate.Template templateElement = complexTemplateElement.addNewTemplate();
+                    templateElement.setRef(templates.get(i)[5]); // other template ID 
+                }
+            }
+        }
+
+           //----------------------------------------------
+           
+           //Sanctions    
+        //check if there is (Sanctions) element or not
+        // if yes, remove all childern 
+        if(doc.getFinderConfiguration().getSanctions()!=null)
+        {
+        for(int i=0;i<doc.getFinderConfiguration().getSanctions().sizeOfSanctionArray();i++)
+        {
+            if(doc.getFinderConfiguration().getSanctions().getSanctionArray(i)!=null)
+            {
+            doc.getFinderConfiguration().getSanctions().removeSanction(i);
+            }
+            i--;
+        }
+        } 
+        else //if no, create new one.
+        {
+              doc.getFinderConfiguration().addNewSanctions();
+        }
+        
+        for (int i = 0; i < mySanctionsModel.size() ;i++) {
+              String classC = mySanctionsModel.get(i).toString().substring(0, mySanctionsModel.get(i).toString().indexOf(","));
+            String property = mySanctionsModel.get(i).toString().substring(mySanctionsModel.get(i).toString().indexOf(",")+1, mySanctionsModel.get(i).toString().lastIndexOf(","));
+             String classD = mySanctionsModel.get(i).toString().substring(mySanctionsModel.get(i).toString().lastIndexOf(",")+1);
+            
+            Sanction sanctionElement= doc.getFinderConfiguration().getSanctions().addNewSanction();
+           sanctionElement.setClassC(classC);
+           sanctionElement.setClassD(classD);
+           sanctionElement.setProperty(property);
+           
+           
+        }
+
+           
+           
+
+        if (doc.validate()) {
+           
+                    XmlOptions xmlOptions = new XmlOptions();
+                    xmlOptions.setSavePrettyPrint();
+                    xmlOptions.setSavePrettyPrintIndent(4);
+            try {
+                doc.save(fXmlFile, xmlOptions);
+                
+               //After Saving the new file. Do you want to use it?
+                    int answer;
+                    answer = JOptionPane.showConfirmDialog(this, "Do you want to use this configuration file??\n\n", "Modified Configuration File", JOptionPane.YES_NO_OPTION);
+                    if (answer == JOptionPane.YES_OPTION) {
+                        Global.useDefault = false;
+                        Global.configFileURL = fXmlFile.getPath().toString();
+                        StartFrame.qframe.dispose();
+                        StartFrame newFrame = new StartFrame();
+                        newFrame.setVisible(true);
+                        this.dispose();
+
+                    } else {
+                        this.dispose();
+                    }
+                
+            } catch (IOException ex) {
+                Logger.getLogger(ModifyConfigurationFileDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                   
+                    
+        } else {
+            JOptionPane.showMessageDialog(this, "  Not valid Sorry.. Cannot Save the file!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        }
+    }//GEN-LAST:event_saveButtonActionPerformed
     /**
      * @param args the command line arguments
      */
@@ -1682,6 +2390,8 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
     private javax.swing.JPanel ThirdTabPanel;
     private javax.swing.JButton addClassificationButton;
     private javax.swing.JButton addFacetsButton;
+    private javax.swing.JButton addIconButton;
+    private javax.swing.JButton addSanctionButton;
     private javax.swing.JComboBox annoPropertiesCombo;
     private javax.swing.JPanel appearancePanel;
     private javax.swing.JComboBox availableTemplatesCombo;
@@ -1714,6 +2424,8 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JPanel languagesPanel;
     public javax.swing.JLabel logoLabel;
@@ -1723,15 +2435,19 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
     private javax.swing.JTextField ontologyURL;
     private javax.swing.JButton removeClassificationButton;
     private javax.swing.JButton removeFacetsButton;
+    private javax.swing.JButton removeIconButton;
+    private javax.swing.JButton removeSanctionButton;
     private javax.swing.JPanel resultsIconPanel;
-    private javax.swing.JButton saveAsButton;
+    private javax.swing.JList resultsIconsList;
+    private javax.swing.JList sanctionsList;
+    private javax.swing.JButton saveButton;
+    private javax.swing.JButton saveTemplateInfo;
     private javax.swing.JCheckBox showCheckBox;
     private javax.swing.JTextField templateIdTextField;
     private javax.swing.JTextField templateNameText;
     private javax.swing.JRadioButton templateRadioButton;
     private javax.swing.JComboBox templatesCombo;
     private javax.swing.JTextField titleLabel;
-    private javax.swing.JButton updateTemplateInfo;
     private javax.swing.JButton uploadLogoButton;
     // End of variables declaration//GEN-END:variables
 
@@ -1768,5 +2484,63 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
         public String toString() {
             return label;
         }
+    }
+}
+
+class ImageListCellRenderer implements ListCellRenderer {
+
+    public Component getListCellRendererComponent(JList jlist,
+            Object value,
+            int cellIndex,
+            boolean isSelected,
+            boolean cellHasFocus) {
+        if (value instanceof JPanel) {
+
+           
+            Component component = (Component) value;         
+            component.setForeground(Color.white);
+            component.setBackground(isSelected ? Color.LIGHT_GRAY : Color.white);
+            return component;
+        } else {
+            // TODO - I get one String here when the JList is first rendered; proper way to deal with this?
+            //System.out.println("Got something besides a JPanel: " + value.getClass().getCanonicalName());
+            return new JLabel("???");
+        }
+    }
+}
+
+class SanctionsListCellRenderer implements ListCellRenderer {
+
+
+   
+    protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
+
+    public Component getListCellRendererComponent(JList list, Object value, int index,
+            boolean isSelected, boolean cellHasFocus) {
+
+        JLabel rendererLabel = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index,
+                isSelected, cellHasFocus);
+
+      String label="";
+            String classC = value.toString().substring(0, value.toString().indexOf(","));
+          
+            IRI classCIRI = IRI.create(classC);
+            OWLClass cls = ModifyConfigurationFileDialog.myOntologyClass.getDf().getOWLClass(classCIRI);
+            label="[Class C: "+ModifyConfigurationFileDialog.myOntologyClass.getOWLClassAlternativeLanguage(cls, "default");
+            
+            String property = value.toString().substring(value.toString().indexOf(",")+1, value.toString().lastIndexOf(","));
+            IRI propIRI = IRI.create(property);
+            OWLObjectProperty prop = ModifyConfigurationFileDialog.myOntologyClass.getDf().getOWLObjectProperty(propIRI);
+            label=label+" , Property R:"+ModifyConfigurationFileDialog.myOntologyClass.getOWLObjectPropertyAlternativeLanguage(prop, "default");
+            
+            String classD = value.toString().substring(value.toString().lastIndexOf(",")+1);
+            IRI classDIRI = IRI.create(classD);
+            OWLClass cls1 =ModifyConfigurationFileDialog.myOntologyClass.getDf().getOWLClass(classDIRI);
+            label=label+" , Class D: "+ModifyConfigurationFileDialog.myOntologyClass.getOWLClassAlternativeLanguage(cls1, "default");
+            
+            rendererLabel.setText(label+"]");
+
+        
+        return rendererLabel;
     }
 }
