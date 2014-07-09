@@ -504,7 +504,8 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
                     }
                     // Item was just selected
                 } else if (evt.getStateChange() == ItemEvent.DESELECTED) {
-
+                    
+                    
                     templateNameText.setText("");
                     showCheckBox.setSelected(false);
                     templateRadioButton.setSelected(false);
@@ -1681,6 +1682,7 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
                     int n = JOptionPane.showConfirmDialog(this, "Are you sure do you want to remove the selected template?", "Remove Warning", JOptionPane.YES_NO_OPTION);
                     if (n == 0) //yes?
                     {
+                        templateIdTextField.setText("");
                         templatesCombo.removeItemAt(templatesCombo.getSelectedIndex());
 
                         for (int i = 0; i < availableTemplatesCombo.getItemCount(); i++) {
