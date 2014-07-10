@@ -80,6 +80,7 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
      JList list;
     FinderConfigurationDocument doc;
     public static OntologyClass myOntologyClass;
+    String ontologyLocation;
     DefaultListModel myClassificationModel;
     DefaultListModel myFacetsPropModel;
     DefaultListModel myIconsModel;
@@ -89,11 +90,21 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
     static boolean myOntologyIsUploaded = false;
     static int counter = 0;
 
-    public ModifyConfigurationFileDialog(java.awt.Dialog parent, boolean modal, File fXmlFile) {
+    public ModifyConfigurationFileDialog(java.awt.Frame parent, boolean modal, File fXmlFile,String ontologyLocation,OntologyClass ont) {
         super(parent, modal);
 
         initComponents();
 
+        
+        if(ont!=null)
+        {
+        this.ontologyLocation=ontologyLocation;
+        myOntologyClass=ont;
+        myOntologyIsUploaded=true;
+        }
+        
+        
+        
         buttonGroup1.add(classRadioButton);
         buttonGroup1.add(templateRadioButton);
 
@@ -253,7 +264,7 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
 
 
         //logo Image?
-        String URLString = myDoc.getFinderConfiguration().getLogo().getURL().toString().trim();
+        /*String URLString = myDoc.getFinderConfiguration().getLogo().getURL().toString().trim();
         if (!URLString.isEmpty()) {
             BufferedImage logo = null;
             try {
@@ -271,20 +282,21 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
                 ImageIcon newIcon = new ImageIcon(bi);
                 logoLabel.setIcon(newIcon);
             }
-        }
+        }*/
 
 
         //======================2- Ontology=================================
 
-        ontologyURL.setText(myDoc.getFinderConfiguration().getOntologyLocation().getUrl().toString());
+        //ontologyURL.setText(myDoc.getFinderConfiguration().getOntologyLocation().getUrl().toString());
+        ontologyURL.setText(ontologyLocation);
         String defaultRenderUse = myDoc.getFinderConfiguration().getClassRendering().getUse().toString();
         for (int i = 0; i < classRenderCombo.getItemCount(); i++) {
             if (classRenderCombo.getItemAt(i).toString().equalsIgnoreCase(defaultRenderUse)) {
                 classRenderCombo.setSelectedIndex(i);
             }
         }
-        myOntologyClass = new OntologyClass(ontologyURL.getText().trim(), true);
-        myOntologyIsUploaded = true;
+        //myOntologyClass = new OntologyClass(ontologyURL.getText().trim(), true);
+        //myOntologyIsUploaded = true;
         fillAllCombos(myOntologyClass);
         String ingredientClass = myDoc.getFinderConfiguration().getIngredientClass().getClass1().toString();
         IngredientClassIRIVariable = ingredientClass;
@@ -846,6 +858,7 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
 
         classRenderCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "IRI", "Label" }));
 
+        ontologyURL.setEditable(false);
         ontologyURL.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ontologyURLActionPerformed(evt);
@@ -942,9 +955,9 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
         SecondTabPanelLayout.setVerticalGroup(
             SecondTabPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(SecondTabPanelLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(29, 29, 29)
                 .addComponent(OntologyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(159, Short.MAX_VALUE))
+                .addContainerGap(141, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Ontology", SecondTabPanel);
@@ -1064,7 +1077,7 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
         ThirdRabPanel1Layout.setVerticalGroup(
             ThirdRabPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ThirdRabPanel1Layout.createSequentialGroup()
-                .addContainerGap(23, Short.MAX_VALUE)
+                .addGap(29, 29, 29)
                 .addComponent(IngredientsClassificationPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(11, 11, 11)
                 .addComponent(FacetsPropertiesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1352,10 +1365,10 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
                 .addGroup(ResultsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(resultsIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(ResultsPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(annoPropertiesCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 596, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
         ResultsPanelLayout.setVerticalGroup(
             ResultsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1462,11 +1475,11 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
         FifthTabPanelLayout.setVerticalGroup(
             FifthTabPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(FifthTabPanelLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addGap(29, 29, 29)
                 .addComponent(SanctionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(56, 56, 56)
                 .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(66, Short.MAX_VALUE))
+                .addContainerGap(57, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Sanctions", FifthTabPanel);
