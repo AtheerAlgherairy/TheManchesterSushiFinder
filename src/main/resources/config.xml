@@ -48,10 +48,10 @@
     </ResultsCharacteristics> 
     
     
-    <!-- 1# In the results, dont show classes that have the following annotation property with the specified value-->
-    <DontShowResult annotationIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#dontShow" value="true"/>
+    <!--  In the results, dont show classes that have the following annotation property with the specified value-->
+    <DontShow annotationIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#dontShow" value="true"/>
     
-    <!-- 2# In the results, dont show the following classes -->
+    <!-- 
     <DontShow>
         <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SpicySushi" />
         <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SweetSushi" />
@@ -70,7 +70,7 @@
         <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#NutsFreePlatter"/>
     </DontShow>
         
-    <!-- ########################################################### -->
+     -->
     
     <QueryTemplates>
         
@@ -101,7 +101,7 @@
     <Sanctions>
         <Sanction classC="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#Meat" property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasCookingStyle" classD="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#CookingStyle"/>
         <Sanction classC="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#Meat" property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasCuttingStyle" classD="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#CuttingStyle"/>
-        <Sanction classC="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SushiIngredient" property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasSpiciness" classD="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#Spiciness"/>
+      
     </Sanctions>
     
 </FinderConfiguration>
