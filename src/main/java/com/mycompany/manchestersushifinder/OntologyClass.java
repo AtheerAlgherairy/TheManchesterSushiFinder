@@ -43,7 +43,7 @@ public class OntologyClass {
 
 
     
-    //This constructer to be used from NewConfigurationFileDialog
+    //This constructer to be used from NewConfigurationFileDialog and ModifyConfigurationFileDialog
     public OntologyClass(String ontologyLocation, boolean temp)
     {
         this.ontologyLocation=ontologyLocation;
