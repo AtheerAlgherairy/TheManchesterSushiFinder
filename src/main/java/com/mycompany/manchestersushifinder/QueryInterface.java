@@ -45,8 +45,10 @@ import javax.swing.event.ListDataListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.w3c.dom.Element;
 
@@ -629,50 +631,51 @@ public class QueryInterface extends javax.swing.JFrame {
 
         //--------------Check Whether the result class is expect to appear or not?---------
         //------------- Using the configuration element (DontShowResult)
-       /* String[] dontShowAnnotation = Global.myConfig.getDontShowResultAnnotationIRIAndValue();
+        String[] dontShowAnnotation = Global.myConfig.getDontShowResultAnnotationIRIAndValue();
 
-         if (dontShowAnnotation != null) {
+        if (dontShowAnnotation != null) {
 
-         OWLLiteral val = null;
-         Collection<OWLClass> toBeRemoved = new ArrayList<OWLClass>();
-
-         for (Iterator<OWLClass> it = resultCollection.iterator(); it.hasNext();) {
-         OWLClass cl = it.next();
-         IRI annotationIRI = IRI.create(dontShowAnnotation[0]);
-         for (OWLAnnotation ann : cl.getAnnotations(Global.myOntology.getOntology(), Global.myOntology.getDf().getOWLAnnotationProperty(annotationIRI))) {
-         val = (OWLLiteral) ann.getValue();
-         if (val.getLiteral().equals(dontShowAnnotation[1])) {
-         toBeRemoved.add(cl);
-
-                      
-
-         break;
-         }
-         }
-
-         }
-
-         resultCollection.removeAll(toBeRemoved);
-         } */
-
-
-        ArrayList<IRI> dontShowClasses = Global.myConfig.getExcludedClassesFromResults();
-        if (dontShowClasses != null) {
-
+            OWLLiteral val = null;
             Collection<OWLClass> toBeRemoved = new ArrayList<OWLClass>();
 
             for (Iterator<OWLClass> it = resultCollection.iterator(); it.hasNext();) {
                 OWLClass cl = it.next();
-
-                for (int j = 0; j < dontShowClasses.size(); j++) {
-                    if (dontShowClasses.get(j).equals(cl.getIRI())) {
+                IRI annotationIRI = IRI.create(dontShowAnnotation[0]);
+                for (OWLAnnotation ann : cl.getAnnotations(Global.myOntology.getOntology(), Global.myOntology.getDf().getOWLAnnotationProperty(annotationIRI))) {
+                    val = (OWLLiteral) ann.getValue();
+                    if (val.getLiteral().equals(dontShowAnnotation[1])) {
                         toBeRemoved.add(cl);
+
+
+
                         break;
                     }
                 }
+
             }
+
             resultCollection.removeAll(toBeRemoved);
         }
+
+
+        /*  ArrayList<IRI> dontShowClasses = Global.myConfig.getExcludedClassesFromResults();
+         if (dontShowClasses != null) {
+
+         Collection<OWLClass> toBeRemoved = new ArrayList<OWLClass>();
+
+         for (Iterator<OWLClass> it = resultCollection.iterator(); it.hasNext();) {
+         OWLClass cl = it.next();
+
+         for (int j = 0; j < dontShowClasses.size(); j++) {
+         if (dontShowClasses.get(j).equals(cl.getIRI())) {
+         toBeRemoved.add(cl);
+         break;
+         }
+         }
+         }
+         resultCollection.removeAll(toBeRemoved);
+         }
+         */
 
         //---------------------------------------------------------
         if (myEngine.getSatisfiable()) {
@@ -707,47 +710,49 @@ public class QueryInterface extends javax.swing.JFrame {
         Collection<OWLClass> resultCollection = myEngine.getQueryResults();
 
         //--------------Check Whether the result class is expect to appear or not?---------
-        //------------- Using the configuration element (DontShowResult)
-       /* String[] dontShowAnnotation = Global.myConfig.getDontShowResultAnnotationIRIAndValue();
+        //------------- Using the configuration element (DontShow)
+        String[] dontShowAnnotation = Global.myConfig.getDontShowResultAnnotationIRIAndValue();
 
-         if (dontShowAnnotation != null) {
-         OWLLiteral val = null;
+        if (dontShowAnnotation != null) {
+            OWLLiteral val = null;
+            Collection<OWLClass> toBeRemoved = new ArrayList<OWLClass>();
+
+            for (Iterator<OWLClass> it = resultCollection.iterator(); it.hasNext();) {
+                OWLClass cl = it.next();
+                IRI annotationIRI = IRI.create(dontShowAnnotation[0]);
+                for (OWLAnnotation ann : cl.getAnnotations(Global.myOntology.getOntology(), Global.myOntology.getDf().getOWLAnnotationProperty(annotationIRI))) {
+                    val = (OWLLiteral) ann.getValue();
+                    if (val.getLiteral().equals(dontShowAnnotation[1])) {
+                        toBeRemoved.add(cl);
+
+                        //resultCollection.remove(cl);
+
+                        //break;
+                    }
+                   
+                }
+            }
+          
+            resultCollection.removeAll(toBeRemoved);
+        }
+
+        /*ArrayList<IRI> dontShowClasses = Global.myConfig.getExcludedClassesFromResults();
+         if (dontShowClasses != null) {
+
          Collection<OWLClass> toBeRemoved = new ArrayList<OWLClass>();
 
          for (Iterator<OWLClass> it = resultCollection.iterator(); it.hasNext();) {
          OWLClass cl = it.next();
-         IRI annotationIRI = IRI.create(dontShowAnnotation[0]);
-         for (OWLAnnotation ann : cl.getAnnotations(Global.myOntology.getOntology(), Global.myOntology.getDf().getOWLAnnotationProperty(annotationIRI))) {
-         val = (OWLLiteral) ann.getValue();
-         if (val.getLiteral().equals(dontShowAnnotation[1])) {
+
+         for (int j = 0; j < dontShowClasses.size(); j++) {
+         if (dontShowClasses.get(j).equals(cl.getIRI())) {
          toBeRemoved.add(cl);
-
-         //resultCollection.remove(cl);
-
          break;
          }
          }
          }
          resultCollection.removeAll(toBeRemoved);
          }*/
-
-        ArrayList<IRI> dontShowClasses = Global.myConfig.getExcludedClassesFromResults();
-        if (dontShowClasses != null) {
-
-            Collection<OWLClass> toBeRemoved = new ArrayList<OWLClass>();
-
-            for (Iterator<OWLClass> it = resultCollection.iterator(); it.hasNext();) {
-                OWLClass cl = it.next();
-
-                for (int j = 0; j < dontShowClasses.size(); j++) {
-                    if (dontShowClasses.get(j).equals(cl.getIRI())) {
-                        toBeRemoved.add(cl);
-                        break;
-                    }
-                }
-            }
-            resultCollection.removeAll(toBeRemoved);
-        }
         //-------------------------------------------------------------------------------
         this.noOfResultsLabel.setText("Results (" + resultCollection.size() + ")");
     }
@@ -762,9 +767,10 @@ public class QueryInterface extends javax.swing.JFrame {
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
 
-
-        NewConfigurationFileDialog newDoalog = new NewConfigurationFileDialog(this, false);
+        ModifyConfigurationFileDialog newDoalog = new ModifyConfigurationFileDialog(this, false, null);
         newDoalog.setVisible(true);
+        // NewConfigurationFileDialog newDoalog = new NewConfigurationFileDialog(this, false);
+        // newDoalog.setVisible(true);
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
@@ -916,6 +922,7 @@ public class QueryInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_excludedRemoveKeyActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+
         SelectConfigurationFileDialog selectDoalog = new SelectConfigurationFileDialog(this, false, false);
         selectDoalog.setVisible(true);
 
