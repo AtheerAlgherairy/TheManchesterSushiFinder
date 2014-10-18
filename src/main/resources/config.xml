@@ -1,107 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <FinderConfiguration>
-    <OntologyLocation url="sushi_9223429_atheer.owl"/>
-    <IngredientClass class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SushiIngredient"/>
+    <OntologyLocation url="pizza-latest.owl"/>
+    <IngredientClass class="http://www.co-ode.org/ontologies/pizza/pizza.owl#PizzaTopping"/>
     
     <AvailableLanguages>
         <language name="default"/>
-        <language name="ar"/> 
-        <language name="es"/> 
+        <language name="pt"/> 
+        
     </AvailableLanguages>
     
-    <Logo URL="/SushiLogo.png"/>
+    <Logo URL="/PizzaLogo.png"/>
     
    
     
-    <TitleLabel text="Sushi Box "/>
+    <TitleLabel text="Pizza Finder "/>
     <IncludedLabel />
     <ExcludedLabel />
     
-<ClassRendering use="label"/> <!--label Or IRI  -->
+<ClassRendering use="IRI"/> <!--label Or IRI  -->
    
    <IngredientsClassifications>
-        <Classification class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#VegetarianIngredient" />
-        <Classification class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SpicyIngredient" /> 
-        <Classification  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#Meat" /> 
-        <Classification class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SeaFood" /> 
+             <Classification class="http://www.co-ode.org/ontologies/pizza/pizza.owl#SpicyTopping" />
+        <Classification class="http://www.co-ode.org/ontologies/pizza/pizza.owl#VegetarianTopping" />
+        <Classification class="http://www.co-ode.org/ontologies/pizza/pizza.owl#CheeseTopping" /> 
    </IngredientsClassifications>
    
    <IngredientsFacets>
-       <Facet property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasSpiciness"/>
-       <Facet property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasSweetness"/>
-       <Facet property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasTexture"/>
-       <Facet property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasCost"/>
-      
+       <Facet property="http://www.co-ode.org/ontologies/pizza/pizza.owl#hasSpiciness"/>
+            
    </IngredientsFacets>
    
    
-    <ResultsAnnotationProperty property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#description"/>
+    <ResultsAnnotationProperty property="http://www.co-ode.org/ontologies/pizza/pizza.owl#description"/>
     <!-- http://www.w3.org/2000/01/rdf-schema#comment -->
     <ResultsCharacteristics>
-        <ResultsCharacteristic  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SpicySushi" url="/spicyIcon.jpg"/>
-        <ResultsCharacteristic  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SushiWithNuts" url="/nutsIcon.jpg" />   
-        <ResultsCharacteristic  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#VegetarianSushi" url="/vegIcon.jpg" />  
-        <ResultsCharacteristic  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SpicyPlatter" url="/spicyIcon.jpg" />
-        <ResultsCharacteristic  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#VegetarianPlatter" url="/vegIcon.jpg" />
-        <ResultsCharacteristic  class="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#LowCaloriesPlatter" url="/lowCalIcon.jpg" />   
+        <ResultsCharacteristic  class="http://www.co-ode.org/ontologies/pizza/pizza.owl#SpicyPizza" url="/spicyIcon.jpg"/>
+        <ResultsCharacteristic  class="http://www.co-ode.org/ontologies/pizza/pizza.owl#VegetarianPizza" url="/vegIcon.jpg" />   
+       
     </ResultsCharacteristics> 
     
     
-    <!-- 1# In the results, dont show classes that have the following annotation property with the specified value-->
-    <DontShowResult annotationIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#dontShow" value="true"/>
-    
-    <!-- 2# In the results, dont show the following classes -->
-    <DontShow>
-        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SpicySushi" />
-        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SweetSushi" />
-        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#NutsFreeSushi" />
-        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SushiWithNuts"/>
-        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#VeganSushi"/>
-        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SushiWithRawMeat"/>
-        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SushiWithCookedMeat"/>
-        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#VegetarianSushi" />
-        
-        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SpicyPlatter" />
-        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#HighCaloriesPlatter" />
-        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#VegetarianPlatter" />
-        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#VeganPlatter"/>
-        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#LowCaloriesPlatter"/>
-        <class classIRI="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#NutsFreePlatter"/>
-    </DontShow>
-        
-    <!-- ########################################################### -->
-    
+    <!--  In the results, dont show classes that have the following annotation property with the specified value-->
+          
     <QueryTemplates>
-        
-        <SimpleTemplate Id="ID1" name="Sushi" show="yes">
-            <BaseClass name="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#NamedSushi"/>
-            <Property name="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasIngredient"/>
-            <ComponentClass name="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SushiIngredient"/>
-        </SimpleTemplate>
-        
-        
-        
-        <ComplexTemplate Id="ID2" name="platter of sushi" show="yes">
-            <BaseClass name="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SushiPlatter"/>
-            <Property name="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasContent"/>
-            <Template ref="ID1"/>
-        </ComplexTemplate>
+
+  <SimpleTemplate Id="ID1" name="Pizza" show="yes">
+            <BaseClass name="http://www.co-ode.org/ontologies/pizza/pizza.owl#NamedPizza"/>
+            <Property name="http://www.co-ode.org/ontologies/pizza/pizza.owl#hasTopping"/>
+            <ComponentClass name="http://www.co-ode.org/ontologies/pizza/pizza.owl#PizzaTopping"/>
+        </SimpleTemplate> 
         
         
-        <ComplexTemplate Id="ID3" name="Tray of platters" show="yes">
-            <BaseClass name="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SushiTray"/>
-            <Property name="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasPlatter"/>
-            <Template ref="ID2"/>
-        </ComplexTemplate>
-        
-      
-    </QueryTemplates>
+ </QueryTemplates>
     
-    <Sanctions>
-        <Sanction classC="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#Meat" property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasCookingStyle" classD="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#CookingStyle"/>
-        <Sanction classC="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#Meat" property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasCuttingStyle" classD="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#CuttingStyle"/>
-        <Sanction classC="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#SushiIngredient" property="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#hasSpiciness" classD="http://www.semanticweb.org/atheer/ontologies/2013/10/untitled-ontology-14#Spiciness"/>
-    </Sanctions>
     
 </FinderConfiguration>
