@@ -214,7 +214,7 @@ public class Configurations {
     public String[] getDontShowResultAnnotationIRIAndValue()
     {
         String[] annotation=null;
-        Element element = (Element) doc.getDocumentElement().getElementsByTagName("DontShowResult").item(0);
+        Element element = (Element) doc.getDocumentElement().getElementsByTagName("DontShow").item(0);
         if (element != null) {
             annotation=new String[2];
             annotation[0] = element.getAttribute("annotationIRI"); //Annotation IRI
@@ -225,7 +225,7 @@ public class Configurations {
     }
     //2#--------------------------------------------------
     
-     public ArrayList<IRI> getExcludedClassesFromResults() {
+     /*public ArrayList<IRI> getExcludedClassesFromResults() {
          
         ArrayList<IRI> listOfClasses = new ArrayList<IRI>();
 
@@ -245,7 +245,7 @@ public class Configurations {
         }
         }
         return listOfClasses;
-      }
+      }*/
     
     
     //---------------------------------------------------
