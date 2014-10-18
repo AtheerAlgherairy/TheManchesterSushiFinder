@@ -1474,7 +1474,7 @@ public class ModifyConfigurationFileDialog extends javax.swing.JDialog {
 
         jTabbedPane1.addTab("Results", FourthTabPanel);
 
-        SanctionsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Santions Assertions"));
+        SanctionsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Sanctions Assertions"));
 
         sanctionsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         jScrollPane4.setViewportView(sanctionsList);

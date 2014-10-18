@@ -248,8 +248,10 @@ public class StartFrame extends javax.swing.JFrame {
         // Set system look and feel
         try {
             // Set cross-platform L&F (called "Metal")
-            UIManager.setLookAndFeel(
-                    UIManager.getCrossPlatformLookAndFeelClassName());
+           UIManager.setLookAndFeel(
+                   UIManager.getCrossPlatformLookAndFeelClassName());
+              //UIManager.setLookAndFeel(
+           // UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(StartFrame.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {

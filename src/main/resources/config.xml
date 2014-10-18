@@ -42,7 +42,8 @@
     
     
     <!--  In the results, dont show classes that have the following annotation property with the specified value-->
-          
+
+
     <QueryTemplates>
 
   <SimpleTemplate Id="ID1" name="Pizza" show="yes">
@@ -54,5 +55,5 @@
         
  </QueryTemplates>
     
-    
+
 </FinderConfiguration>
