@@ -157,7 +157,7 @@ public class SelectConfigurationFileDialog extends javax.swing.JDialog {
                     this.dispose();
                 } else {
                     this.dispose();
-                    ModifyConfigurationFileDialog newDoalog = new ModifyConfigurationFileDialog(this, false, fXmlFile);
+                    ModifyConfigurationFileDialog newDoalog = new ModifyConfigurationFileDialog(null, false, fXmlFile);
                     newDoalog.setVisible(true);
                 }
 
